@@ -15,13 +15,21 @@ type LayerName =
 
 type HeroLayerProps = {
   layer: LayerName;
-  className: string;
+  containerClassName?: string;
+  imageClassName?: string;
+  containerRef: RefObject<HTMLPictureElement | null>;
   imageRef: RefObject<HTMLImageElement | null>;
 };
 
-function HeroLayer({ layer, className, imageRef }: HeroLayerProps) {
+function HeroLayer({
+  layer,
+  containerClassName = "",
+  imageClassName = "",
+  containerRef,
+  imageRef,
+}: HeroLayerProps) {
   return (
-    <picture className="absolute inset-0">
+    <picture ref={containerRef} className={`absolute inset-0 ${containerClassName}`}>
       <source media="(max-width: 767px)" srcSet={`/images/hero/mobile/${layer}.webp`} />
       <source media="(max-width: 1023px)" srcSet={`/images/hero/tablet/${layer}.webp`} />
       <source media="(min-aspect-ratio: 2/1)" srcSet={`/images/hero/ultrawide/${layer}.webp`} />
@@ -31,7 +39,8 @@ function HeroLayer({ layer, className, imageRef }: HeroLayerProps) {
         alt=""
         aria-hidden="true"
         draggable={false}
-        className={`absolute inset-0 size-full object-cover select-none ${className}`}
+        fetchPriority={layer === "layer-01-sky" ? "high" : "auto"}
+        className={`absolute inset-0 size-full object-cover object-center select-none transform-gpu ${imageClassName}`}
       />
     </picture>
   );
@@ -39,30 +48,101 @@ function HeroLayer({ layer, className, imageRef }: HeroLayerProps) {
 
 export function ParallaxHero() {
   const sectionRef = useRef<HTMLElement>(null);
+  const skyWrapRef = useRef<HTMLPictureElement>(null);
+  const distantWrapRef = useRef<HTMLPictureElement>(null);
+  const foregroundWrapRef = useRef<HTMLPictureElement>(null);
   const skyRef = useRef<HTMLImageElement>(null);
   const distantRef = useRef<HTMLImageElement>(null);
   const foregroundRef = useRef<HTMLImageElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const transitionRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
       const section = sectionRef.current;
+      const skyWrap = skyWrapRef.current;
+      const distantWrap = distantWrapRef.current;
+      const foregroundWrap = foregroundWrapRef.current;
       const sky = skyRef.current;
       const distant = distantRef.current;
       const foreground = foregroundRef.current;
       const copy = copyRef.current;
       const progress = progressRef.current;
+      const transition = transitionRef.current;
 
-      if (!section || !sky || !distant || !foreground || !copy || !progress) return;
+      if (
+        !section ||
+        !skyWrap ||
+        !distantWrap ||
+        !foregroundWrap ||
+        !sky ||
+        !distant ||
+        !foreground ||
+        !copy ||
+        !progress ||
+        !transition
+      ) {
+        return;
+      }
 
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const copyParts = copy.querySelectorAll<HTMLElement>("[data-hero-copy]");
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reducedMotion) {
+        gsap.set([skyWrap, distantWrap, foregroundWrap, ...copyParts], {
+          autoAlpha: 1,
+          clearProps: "transform",
+        });
         gsap.set(sky, { scale: 1.06 });
         gsap.set(distant, { yPercent: 0 });
         gsap.set(foreground, { yPercent: 4 });
         gsap.set(progress, { scaleY: 1 });
+        gsap.set(transition, { autoAlpha: 1 });
         return;
       }
+
+      gsap.set([skyWrap, distantWrap, foregroundWrap], { autoAlpha: 0 });
+      gsap.set(copyParts, { autoAlpha: 0, y: 34 });
+
+      const intro = gsap
+        .timeline({ paused: true, defaults: { ease: "power3.out" } })
+        .fromTo(
+          skyWrap,
+          { autoAlpha: 0, scale: 1.055 },
+          { autoAlpha: 1, scale: 1, duration: 1.45 },
+          0,
+        )
+        .fromTo(
+          distantWrap,
+          { autoAlpha: 0, y: 72 },
+          { autoAlpha: 1, y: 0, duration: 1.15 },
+          0.18,
+        )
+        .fromTo(
+          foregroundWrap,
+          { autoAlpha: 0, y: 120 },
+          { autoAlpha: 1, y: 0, duration: 1.25 },
+          0.3,
+        )
+        .to(
+          copyParts,
+          { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.075 },
+          0.48,
+        );
+
+      let cancelled = false;
+      const revealHero = async () => {
+        await Promise.all(
+          [sky, distant, foreground].map((image) =>
+            image.decode ? image.decode().catch(() => undefined) : Promise.resolve(),
+          ),
+        );
+
+        if (!cancelled) intro.play(0);
+      };
+
+      void revealHero();
 
       const media = gsap.matchMedia();
 
@@ -74,20 +154,21 @@ export function ParallaxHero() {
               trigger: section,
               start: "top top",
               end: "bottom bottom",
-              scrub: 0.65,
+              scrub: 0.7,
               invalidateOnRefresh: true,
             },
           })
-          .fromTo(sky, { yPercent: -3, scale: 1.08 }, { yPercent: 5, scale: 1.12 }, 0)
-          .fromTo(distant, { yPercent: 9, scale: 1.04 }, { yPercent: -10, scale: 1.06 }, 0)
+          .fromTo(sky, { yPercent: -3, scale: 1.08 }, { yPercent: 4, scale: 1.115 }, 0)
+          .fromTo(distant, { yPercent: 5, scale: 1.035 }, { yPercent: -5, scale: 1.055 }, 0)
           .fromTo(
             foreground,
-            { yPercent: 22, scale: 0.99 },
-            { yPercent: -8, scale: 1.035 },
+            { yPercent: 17, scale: 0.995 },
+            { yPercent: -7, scale: 1.03 },
             0,
           )
-          .fromTo(copy, { yPercent: 0, autoAlpha: 1 }, { yPercent: -15, autoAlpha: 0 }, 0.44)
-          .fromTo(progress, { scaleY: 0 }, { scaleY: 1 }, 0);
+          .fromTo(copy, { yPercent: 0, autoAlpha: 1 }, { yPercent: -12, autoAlpha: 0 }, 0.5)
+          .fromTo(progress, { scaleY: 0 }, { scaleY: 1 }, 0)
+          .fromTo(transition, { autoAlpha: 0 }, { autoAlpha: 1 }, 0.72);
       });
 
       media.add("(max-width: 767px)", () => {
@@ -98,62 +179,78 @@ export function ParallaxHero() {
               trigger: section,
               start: "top top",
               end: "bottom bottom",
-              scrub: 0.45,
+              scrub: 0.5,
               invalidateOnRefresh: true,
             },
           })
-          .fromTo(sky, { yPercent: -2, scale: 1.07 }, { yPercent: 3, scale: 1.1 }, 0)
-          .fromTo(distant, { yPercent: 5, scale: 1.02 }, { yPercent: -6, scale: 1.04 }, 0)
+          .fromTo(sky, { yPercent: -2, scale: 1.07 }, { yPercent: 3, scale: 1.095 }, 0)
+          .fromTo(distant, { yPercent: 3, scale: 1.02 }, { yPercent: -3, scale: 1.035 }, 0)
           .fromTo(
             foreground,
-            { yPercent: 12, scale: 0.995 },
-            { yPercent: -4, scale: 1.01 },
+            { yPercent: 10, scale: 1 },
+            { yPercent: -3, scale: 1.012 },
             0,
           )
-          .fromTo(copy, { yPercent: 0, autoAlpha: 1 }, { yPercent: -10, autoAlpha: 0 }, 0.52)
-          .fromTo(progress, { scaleY: 0 }, { scaleY: 1 }, 0);
+          .fromTo(copy, { yPercent: 0, autoAlpha: 1 }, { yPercent: -8, autoAlpha: 0 }, 0.56)
+          .fromTo(progress, { scaleY: 0 }, { scaleY: 1 }, 0)
+          .fromTo(transition, { autoAlpha: 0 }, { autoAlpha: 1 }, 0.7);
       });
 
-      return () => media.revert();
+      return () => {
+        cancelled = true;
+        intro.kill();
+        media.revert();
+      };
     },
     { scope: sectionRef },
   );
 
   return (
-    <section ref={sectionRef} className="relative h-[145svh] bg-[#09100e] md:h-[180svh]">
+    <section ref={sectionRef} className="relative h-[150svh] bg-[#09100e] md:h-[180svh]">
       <div className="sticky top-0 h-[100svh] overflow-hidden text-white">
         <div className="absolute inset-0 bg-[#121c21]" />
 
-        <HeroLayer layer="layer-01-sky" imageRef={skyRef} className="will-change-transform" />
+        <HeroLayer
+          layer="layer-01-sky"
+          containerRef={skyWrapRef}
+          imageRef={skyRef}
+          containerClassName="z-0 will-change-[opacity,transform]"
+          imageClassName="will-change-transform"
+        />
         <HeroLayer
           layer="layer-02-distant-refinery"
+          containerRef={distantWrapRef}
           imageRef={distantRef}
-          className="will-change-transform"
+          containerClassName="z-10 will-change-[opacity,transform]"
+          imageClassName="will-change-transform brightness-[0.88] saturate-[0.86] drop-shadow-[0_-2px_8px_rgba(225,130,72,0.22)]"
         />
 
-        <div className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(90deg,rgba(5,11,10,0.86)_0%,rgba(5,11,10,0.57)_38%,rgba(5,11,10,0.12)_70%),linear-gradient(0deg,rgba(5,11,10,0.62)_0%,transparent_52%)] md:bg-[linear-gradient(90deg,rgba(5,11,10,0.9)_0%,rgba(5,11,10,0.6)_35%,rgba(5,11,10,0.06)_72%),linear-gradient(0deg,rgba(5,11,10,0.62)_0%,transparent_48%)]" />
+        <div className="pointer-events-none absolute inset-0 z-[15] bg-[linear-gradient(90deg,rgba(5,11,10,0.86)_0%,rgba(5,11,10,0.57)_38%,rgba(5,11,10,0.12)_70%),linear-gradient(0deg,rgba(5,11,10,0.62)_0%,transparent_52%)] md:bg-[linear-gradient(90deg,rgba(5,11,10,0.9)_0%,rgba(5,11,10,0.6)_35%,rgba(5,11,10,0.06)_72%),linear-gradient(0deg,rgba(5,11,10,0.62)_0%,transparent_48%)]" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[16] h-[52%] bg-[radial-gradient(ellipse_at_72%_35%,rgba(224,125,65,0.1),transparent_46%),linear-gradient(0deg,rgba(6,13,12,0.4),transparent_78%)]" />
 
         <HeroLayer
           layer="layer-03-main-facility"
+          containerRef={foregroundWrapRef}
           imageRef={foregroundRef}
-          className="z-20 will-change-transform"
+          containerClassName="z-20 will-change-[opacity,transform]"
+          imageClassName="will-change-transform saturate-[0.92] contrast-[1.035] drop-shadow-[0_-2px_7px_rgba(224,139,83,0.2)]"
         />
 
-        <div className="pointer-events-none absolute inset-0 z-30 bg-[linear-gradient(0deg,rgba(4,9,8,0.7)_0%,transparent_33%)]" />
-        <div className="pointer-events-none absolute inset-0 z-30 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:48px_48px] opacity-50" />
+        <div className="pointer-events-none absolute inset-0 z-30 bg-[linear-gradient(0deg,rgba(4,9,8,0.72)_0%,transparent_35%)]" />
+        <div className="pointer-events-none absolute inset-0 z-30 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:48px_48px] opacity-45" />
 
         <div className="relative z-40 mx-auto flex h-full w-full max-w-[1480px] items-start px-5 pt-32 sm:px-8 md:items-center md:pt-20 lg:px-12">
           <div ref={copyRef} className="max-w-[780px] will-change-transform">
-            <div className="mb-5 flex items-center gap-3 text-[0.65rem] font-bold tracking-[0.22em] text-[#e2a261] uppercase sm:mb-7 sm:text-xs">
+            <div data-hero-copy className="mb-5 flex items-center gap-3 text-[0.65rem] font-bold tracking-[0.22em] text-[#e2a261] uppercase sm:mb-7 sm:text-xs">
               <span className="h-px w-9 bg-[#e2a261] sm:w-12" />
               Oil · Gas · Industrial piping
             </div>
 
-            <h1 className="max-w-[760px] text-[clamp(3.2rem,8.5vw,8.2rem)] leading-[0.86] font-semibold tracking-[-0.068em] text-balance drop-shadow-[0_5px_25px_rgba(0,0,0,0.38)]">
+            <h1 data-hero-copy className="max-w-[760px] text-[clamp(3.2rem,8.5vw,8.2rem)] leading-[0.86] font-semibold tracking-[-0.068em] text-balance drop-shadow-[0_5px_25px_rgba(0,0,0,0.38)]">
               Precision beneath every line.
             </h1>
 
-            <div className="mt-7 max-w-[650px] border-l border-white/30 pl-5 sm:mt-9 sm:pl-7">
+            <div data-hero-copy className="mt-7 max-w-[650px] border-l border-white/30 pl-5 sm:mt-9 sm:pl-7">
               <p className="max-w-[590px] text-sm leading-6 text-white/72 sm:text-lg sm:leading-8">
                 Engineering, procurement, construction, and piping execution for
                 high-demand energy and industrial environments.
@@ -190,6 +287,10 @@ export function ParallaxHero() {
         </div>
 
         <div className="absolute bottom-0 left-0 z-40 h-1 w-24 bg-[#e2a261] sm:w-36" />
+        <div
+          ref={transitionRef}
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-[38svh] bg-[linear-gradient(180deg,transparent_0%,rgba(6,19,21,0.28)_36%,#071b1f_100%)] opacity-0"
+        />
       </div>
     </section>
   );
