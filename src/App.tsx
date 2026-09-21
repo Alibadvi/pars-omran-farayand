@@ -1,16 +1,80 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import { MainLayout } from "./components/layout/MainLayout";
+import { PlaceholderPage } from "./pages/PlaceholderPage";
+
 function App() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-950 text-white">
-      <div className="text-center">
-        <p className="mb-3 text-sm uppercase tracking-[0.35em] text-orange-500">
-          Pars Omran Farayand
-        </p>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route
+            index
+            element={
+              <PlaceholderPage
+                eyebrow="Energy infrastructure"
+                title="Engineering the future"
+              />
+            }
+          />
 
-        <h1 className="text-4xl font-semibold md:text-7xl">
-          Engineering the future
-        </h1>
-      </div>
-    </main>
+          <Route
+            path="about"
+            element={
+              <PlaceholderPage eyebrow="Company" title="About us" />
+            }
+          />
+
+          <Route
+            path="capabilities"
+            element={
+              <PlaceholderPage
+                eyebrow="What we do"
+                title="Capabilities"
+              />
+            }
+          />
+
+          <Route
+            path="projects"
+            element={
+              <PlaceholderPage eyebrow="Our work" title="Projects" />
+            }
+          />
+
+          <Route
+            path="hse"
+            element={
+              <PlaceholderPage eyebrow="Commitment" title="HSE" />
+            }
+          />
+
+          <Route
+            path="contact"
+            element={
+              <PlaceholderPage eyebrow="Work with us" title="Contact" />
+            }
+          />
+
+          <Route
+            path="admin"
+            element={
+              <PlaceholderPage
+                eyebrow="Secure access"
+                title="Project portal"
+              />
+            }
+          />
+
+          <Route
+            path="*"
+            element={
+              <PlaceholderPage eyebrow="404" title="Page not found" />
+            }
+          />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
