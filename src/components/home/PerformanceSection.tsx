@@ -79,7 +79,7 @@ export function PerformanceSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-50 -mt-[8svh] min-h-[92svh] overflow-hidden bg-[#071b1f] text-white md:min-h-[82svh]"
+      className="relative z-50 min-h-[92svh] overflow-hidden bg-[#071b1f] text-white md:min-h-[82svh]"
     >
       <img
         ref={imageRef}
