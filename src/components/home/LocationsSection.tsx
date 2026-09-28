@@ -2,228 +2,263 @@ import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowUpRight, MapPin } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Crosshair } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { FEATURED_PROVINCES, IRAN_PATH, PROVINCE_LINES, WORLD_PATH } from "../../data/mapPaths";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Natural Earth 110m Iran outline, projected into this SVG's 740 x 500 viewBox.
-const IRAN_OUTLINE =
-  "M371.3 86.8 L401.2 80.8 L425.4 63.1 L448.1 64.0 L463.1 58.2 L487.2 61.1 L524.8 76.8 L552.0 80.2 L590.8 107.7 L616.2 108.8 L619.2 134.8 L605.3 173.5 L596.0 196.0 L610.8 200.6 L596.2 217.6 L607.4 242.3 L610.0 262.0 L635.8 267.2 L638.6 287.2 L607.7 315.3 L624.6 331.6 L638.2 350.3 L670.7 364.0 L671.7 391.3 L688.0 396.3 L690.8 410.5 L641.7 426.6 L628.9 462.6 L564.9 453.2 L527.9 446.1 L489.5 442.1 L475.0 404.1 L458.7 398.6 L432.6 404.1 L398.3 419.1 L356.8 408.8 L322.4 385.0 L289.7 376.2 L267.0 346.7 L241.9 305.4 L223.6 310.4 L202.0 300.2 L189.3 312.3 L170.5 296.0 L170.2 279.5 L159.3 279.5 L164.9 257.0 L147.4 233.5 L105.7 216.5 L82.2 187.0 L90.0 162.8 L107.2 152.1 L104.6 134.0 L82.3 124.7 L60.3 87.7 L41.7 62.9 L48.3 53.3 L37.7 17.7 L61.0 8.9 L66.4 20.6 L83.6 34.9 L106.9 39.0 L119.2 38.1 L159.3 15.2 L172.0 13.0 L182.1 22.0 L170.4 37.4 L191.6 53.6 L200.0 52.1 L210.8 74.9 L243.0 81.4 L266.6 96.9 L315.0 102.3 L368.1 94.1 L371.3 86.8 Z";
+const MAP_WIDTH = 1200;
+const MAP_HEIGHT = 600;
+const position = (longitude: number, latitude: number) => ({
+  x: ((longitude + 180) / 360) * MAP_WIDTH,
+  y: ((90 - latitude) / 180) * MAP_HEIGHT,
+});
 
-const projectRegions = [
+const stops = [
   {
-    name: "South Pars",
-    area: "Bushehr Province",
-    description:
-      "Process piping and mechanical packages across South Pars phases, including Phase 13 and gas metering works.",
-    x: 326,
-    y: 388,
+    number: "01",
+    kicker: "A closer look",
+    name: "Where we work.",
+    area: "From the world to the field",
+    description: "Scroll to trace our project footprint across Iran's energy and industrial corridors.",
+    point: position(54, 32),
+    province: "",
   },
   {
-    name: "Khuzestan",
+    number: "02",
+    kicker: "Iran · project footprint",
+    name: "Built on the ground.",
+    area: "Industrial projects across Iran",
+    description: "From the southwest's refinery and oilfield work to the gas processing facilities on the Persian Gulf.",
+    point: position(54, 32),
+    province: "",
+  },
+  {
+    number: "03",
+    kicker: "Khuzestan · southwest Iran",
+    name: "Khuzestan.",
     area: "Abadan · South Azadegan",
-    description:
-      "Refinery piping in Abadan and tank engineering, procurement, and fabrication for South Azadegan.",
-    x: 180,
-    y: 282,
+    description: "Refinery piping in Abadan and tank engineering, procurement, and fabrication for South Azadegan.",
+    point: position(48.7, 30.9),
+    province: "Khuzestan",
   },
   {
-    name: "Fars",
-    area: "Saadat Abad Oilfield",
-    description:
-      "Wellhead facilities, flowlines, and related construction for the Saadat Abad oilfield.",
-    x: 350,
-    y: 350,
+    number: "04",
+    kicker: "Fars · southern Iran",
+    name: "Fars.",
+    area: "Saadat Abad oilfield",
+    description: "Wellhead facilities, flowlines, and related construction in the Fars project area.",
+    point: position(52.5, 29.6),
+    province: "Fars",
   },
+  {
+    number: "05",
+    kicker: "Bushehr · Persian Gulf",
+    name: "South Pars.",
+    area: "Piping · mechanical · gas metering",
+    description: "Process piping and mechanical packages across South Pars phases, including Phase 13.",
+    point: position(52.6, 27.5),
+    province: "Bushehr",
+  },
+] as const;
+
+const markers = [
+  { label: "Abadan", point: position(48.29, 30.34), stop: 2 },
+  { label: "South Azadegan", point: position(48.9, 31.7), stop: 2 },
+  // These regional markers indicate approximate project areas, not exact site coordinates.
+  { label: "Fars project area", point: position(52.5, 29.6), stop: 3 },
+  { label: "South Pars", point: position(52.6, 27.5), stop: 4 },
 ];
 
 export function LocationsSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
-  const activeRegion = projectRegions[activeIndex];
+  const mapRef = useRef<SVGSVGElement>(null);
+  const activeRef = useRef(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const active = stops[activeIndex];
 
-  useGSAP(
-    () => {
-      const section = sectionRef.current;
-      if (!section || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  useGSAP(() => {
+    const section = sectionRef.current;
+    const map = mapRef.current;
+    if (!section || !map) return;
 
-      const items = section.querySelectorAll<HTMLElement>("[data-location-reveal]");
-      gsap.fromTo(
-        items,
-        { autoAlpha: 0, y: 24 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.85,
-          stagger: 0.08,
-          ease: "power3.out",
-          scrollTrigger: { trigger: section, start: "top 78%", once: true },
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const ratio = () => map.clientWidth / Math.max(1, map.clientHeight);
+    const camera = { x: 600, y: 300, zoom: 1 };
+    const draw = () => {
+      const width = MAP_WIDTH / camera.zoom;
+      const height = width / ratio();
+      map.setAttribute("viewBox", `${camera.x - width / 2} ${camera.y - height / 2} ${width} ${height}`);
+    };
+
+    if (reduce) {
+      camera.x = stops[1].point.x;
+      camera.y = stops[1].point.y;
+      camera.zoom = window.innerWidth < 768 ? 9 : 7;
+      draw();
+      activeRef.current = 1;
+      setActiveIndex(1);
+      return;
+    }
+
+    const media = gsap.matchMedia();
+    const setup = (isMobile: boolean) => {
+      camera.x = 600;
+      camera.y = 300;
+      camera.zoom = 1;
+      draw();
+      activeRef.current = 0;
+      setActiveIndex(0);
+
+      const timeline = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.6,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const next = Math.min(stops.length - 1, Math.floor(self.progress * stops.length));
+            if (next !== activeRef.current) {
+              activeRef.current = next;
+              setActiveIndex(next);
+            }
+          },
         },
-      );
-    },
-    { scope: sectionRef },
-  );
+      });
+
+      // Each stop has a short hold, giving the reader time to see the map and copy.
+      const targets = [
+        { point: stops[1].point, zoom: isMobile ? 9 : 7 },
+        { point: stops[2].point, zoom: isMobile ? 37 : 26 },
+        { point: stops[3].point, zoom: isMobile ? 34 : 24 },
+        { point: stops[4].point, zoom: isMobile ? 43 : 30 },
+      ];
+      targets.forEach(({ point, zoom }, index) => {
+        timeline.to(camera, { x: point.x, y: point.y, zoom, duration: 0.78, onUpdate: draw }, index);
+        if (index < targets.length - 1) timeline.to({}, { duration: 0.22 }, index + 0.78);
+      });
+
+      const onResize = () => draw();
+      window.addEventListener("resize", onResize, { passive: true });
+      return () => {
+        window.removeEventListener("resize", onResize);
+        timeline.scrollTrigger?.kill();
+        timeline.kill();
+      };
+    };
+
+    media.add("(max-width: 767px)", () => setup(true));
+    media.add("(min-width: 768px)", () => setup(false));
+    return () => media.revert();
+  }, { scope: sectionRef });
 
   return (
     <section
       ref={sectionRef}
-      className="relative isolate overflow-hidden bg-[#0b2429] py-14 text-white sm:py-16 lg:py-20"
+      id="locations"
+      className="relative h-[370svh] bg-[#071d25] text-white md:h-[410svh] motion-reduce:h-auto"
       aria-labelledby="locations-heading"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(141,198,192,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(141,198,192,0.055)_1px,transparent_1px)] bg-[size:52px_52px]" />
-      <div className="pointer-events-none absolute -right-28 top-0 size-[620px] rounded-full bg-[#247280]/12 blur-3xl" />
+      <div className="sticky top-0 isolate h-[100svh] overflow-hidden bg-[#071d25] motion-reduce:relative motion-reduce:h-[720px] sm:motion-reduce:h-[620px]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_52%_56%,#174552_0%,#0a2831_52%,#071d25_100%)]" />
+        <div className="pointer-events-none absolute inset-0 opacity-50 bg-[linear-gradient(rgba(153,199,203,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(153,199,203,0.07)_1px,transparent_1px)] bg-[size:40px_40px] md:bg-[size:64px_64px]" />
+        <div className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(90deg,rgba(7,29,37,0.48),transparent_38%,rgba(7,29,37,0.2)),linear-gradient(0deg,#071d25,transparent_23%,transparent_70%,rgba(7,29,37,0.5))]" />
 
-      <div className="relative mx-auto max-w-[1480px] px-5 sm:px-8 lg:px-12">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:items-stretch lg:gap-12">
-          <div className="contents lg:flex lg:flex-col">
-            <div data-location-reveal className="order-1 lg:pt-3">
-              <p className="flex items-center gap-3 text-[0.64rem] font-bold uppercase tracking-[0.24em] text-[#e5aa6a]">
-                <span className="h-px w-9 bg-[#e5aa6a]" />
-                Selected project areas
-              </p>
-              <h2
-                id="locations-heading"
-                className="mt-5 max-w-[570px] text-[clamp(2.65rem,5.6vw,5rem)] font-semibold leading-[0.95] tracking-[-0.055em] text-balance"
-              >
-                Where we work.
-              </h2>
-              <p className="mt-5 max-w-[475px] text-sm leading-6 text-[#bfced0] sm:text-base sm:leading-7">
-                On the ground across Iran&apos;s energy and industrial corridors,
-                from refinery units to wellhead facilities.
-              </p>
+        <svg
+          ref={mapRef}
+          viewBox="0 0 1200 600"
+          preserveAspectRatio="xMidYMid meet"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          role="img"
+          aria-label="World map zooming into project regions in Iran: Khuzestan, Fars and Bushehr"
+        >
+          <defs>
+            <linearGradient id="location-iran" x1="0" x2="1" y1="0" y2="1">
+              <stop stopColor="#44727b" />
+              <stop offset="1" stopColor="#214653" />
+            </linearGradient>
+            <pattern id="location-map-dots" width="2.8" height="2.8" patternUnits="userSpaceOnUse">
+              <circle cx="0.5" cy="0.5" r="0.18" fill="#b5ced0" opacity="0.32" />
+            </pattern>
+          </defs>
+          <path d={WORLD_PATH} fill="#244954" fillOpacity="0.8" stroke="#7ca6a9" strokeOpacity="0.42" strokeWidth="0.38" vectorEffect="non-scaling-stroke" />
+          <path d={IRAN_PATH} fill="url(#location-iran)" stroke="#d9a469" strokeWidth="0.8" vectorEffect="non-scaling-stroke" />
+          <g opacity={activeIndex > 0 ? 1 : 0} className="transition-opacity duration-700">
+            <path d={IRAN_PATH} fill="url(#location-map-dots)" />
+            {Object.entries(FEATURED_PROVINCES).map(([name, path]) => (
+              <path
+                key={name}
+                d={path}
+                fill={active.province === name ? "#d98d52" : "transparent"}
+                fillOpacity={active.province === name ? 0.38 : 0}
+                className="transition-[fill,fill-opacity] duration-700"
+              />
+            ))}
+            <path d={PROVINCE_LINES} fill="none" stroke="#b6ced0" strokeOpacity="0.52" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+          </g>
+          {markers.map((marker) => {
+            const selected = marker.stop === activeIndex;
+            return (
+              <g key={marker.label} opacity={selected ? 1 : activeIndex > 0 ? 0.3 : 0} className="transition-opacity duration-500">
+                <circle cx={marker.point.x} cy={marker.point.y} r="0.7" fill="#f4b777" opacity="0.28" />
+                <circle cx={marker.point.x} cy={marker.point.y} r="0.24" fill={selected ? "#ffcb8f" : "#a9c9ca"} />
+              </g>
+            );
+          })}
+        </svg>
+
+        <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 size-16 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#efb679]/30 opacity-0 transition-opacity duration-700 md:size-24" style={{ opacity: activeIndex > 1 ? 0.65 : 0 }}>
+          <span className="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 -translate-y-1/2 bg-[#efb679]" />
+          <span className="absolute left-1/2 bottom-0 h-3 w-px -translate-x-1/2 translate-y-1/2 bg-[#efb679]" />
+          <span className="absolute left-0 top-1/2 h-px w-3 -translate-x-1/2 -translate-y-1/2 bg-[#efb679]" />
+          <span className="absolute right-0 top-1/2 h-px w-3 translate-x-1/2 -translate-y-1/2 bg-[#efb679]" />
+        </div>
+
+        <div className="pointer-events-none absolute inset-0 z-20 flex flex-col px-5 pt-[clamp(6.25rem,13vh,8.5rem)] pb-6 sm:px-8 lg:px-12 lg:pb-10">
+          <div className="mx-auto w-full max-w-[1480px]">
+            <div className="flex items-center gap-3 text-[0.61rem] font-bold uppercase tracking-[0.24em] text-[#edb576] sm:text-[0.69rem]">
+              <span className="h-px w-8 bg-[#edb576]" /> Our footprint / 0{activeIndex + 1}
             </div>
+            <h2 id="locations-heading" className="mt-3 max-w-[650px] text-[clamp(2.45rem,6vw,5rem)] font-semibold leading-[0.95] tracking-[-0.055em] text-balance">
+              Where we work.
+            </h2>
+            <p className="mt-3 max-w-[430px] text-xs leading-5 text-[#c5d7d8] sm:text-sm sm:leading-6">
+              From refinery units to oilfield and gas facilities.
+            </p>
+          </div>
 
-            <div
-              data-location-reveal
-              className="order-3 border border-white/15 bg-[#102e33]/90 p-5 sm:p-6 lg:mt-auto"
-              aria-live="polite"
-            >
-              <p className="text-[0.59rem] font-bold uppercase tracking-[0.24em] text-[#e5aa6a]">
-                0{activeIndex + 1} / In focus
-              </p>
-              <div className="mt-3 flex items-start justify-between gap-3">
-                <div>
-                  <h3 className="text-2xl font-semibold tracking-[-0.035em] sm:text-3xl">
-                    {activeRegion.name}
-                  </h3>
-                  <p className="mt-1 text-xs uppercase tracking-[0.16em] text-white/55">
-                    {activeRegion.area}
-                  </p>
-                </div>
-                <MapPin size={20} className="mt-1 shrink-0 text-[#e5aa6a]" aria-hidden="true" />
+          <div className="mx-auto mt-auto flex w-full max-w-[1480px] items-end justify-between gap-4">
+            <div className="pointer-events-auto w-full max-w-[490px] border border-white/15 bg-[#0b2832]/90 p-4 shadow-[0_22px_60px_rgba(0,0,0,0.18)] backdrop-blur-xl sm:p-6">
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-[0.59rem] font-bold uppercase tracking-[0.19em] text-[#edb576] sm:text-[0.65rem]">{active.kicker}</span>
+                <Crosshair size={17} className="shrink-0 text-[#edb576]" aria-hidden="true" />
               </div>
-              <p className="mt-4 max-w-[490px] text-sm leading-6 text-[#bfced0]">
-                {activeRegion.description}
-              </p>
-              <NavLink
-                to="/projects"
-                className="group mt-5 inline-flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[#e5aa6a] transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e5aa6a] focus-visible:ring-offset-4 focus-visible:ring-offset-[#102e33]"
-              >
-                Explore projects
-                <ArrowUpRight
-                  size={15}
-                  className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                />
+              <h3 className="mt-2 text-[clamp(1.55rem,3vw,2.5rem)] font-semibold leading-tight tracking-[-0.045em]">{active.name}</h3>
+              <p className="mt-1 text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-white/65 sm:text-xs">{active.area}</p>
+              <p className="mt-3 max-w-[410px] text-xs leading-5 text-[#cad8da] sm:text-sm sm:leading-6">{active.description}</p>
+              <NavLink to="/projects" className="group mt-4 inline-flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[#edb576] transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#edb576] focus-visible:ring-offset-4 focus-visible:ring-offset-[#0b2832]">
+                Explore projects <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </NavLink>
             </div>
 
-            <div data-location-reveal className="order-4 grid grid-cols-3 gap-2 lg:mt-4">
-              {projectRegions.map((region, index) => {
-                const selected = index === activeIndex;
-
-                return (
-                  <button
-                    key={region.name}
-                    type="button"
-                    aria-pressed={selected}
-                    onClick={() => setActiveIndex(index)}
-                    onMouseEnter={() => {
-                      if (window.matchMedia("(hover: hover)").matches) setActiveIndex(index);
-                    }}
-                    className={`min-h-14 border px-2 py-2.5 text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e5aa6a] sm:px-3 ${
-                      selected
-                        ? "border-[#e5aa6a] bg-[#e5aa6a] text-[#132321]"
-                        : "border-white/15 bg-white/[0.035] text-white/75 hover:border-[#e5aa6a]/65 hover:bg-white/10 hover:text-white"
-                    }`}
-                  >
-                    <span className="block text-[0.55rem] font-bold tracking-[0.18em] opacity-70">
-                      0{index + 1}
-                    </span>
-                    <span className="mt-1 block text-[0.65rem] font-bold leading-4 sm:text-xs">
-                      {region.name}
-                    </span>
-                  </button>
-                );
-              })}
+            <div className="hidden items-end gap-5 pb-1 lg:flex">
+              <span className="text-[0.58rem] font-bold uppercase tracking-[0.18em] text-white/55">Scroll to explore</span>
+              <ArrowDown size={17} className="text-[#edb576]" aria-hidden="true" />
             </div>
           </div>
 
-          <div
-            data-location-reveal
-            className="relative order-2 aspect-[740/500] w-full overflow-hidden border border-white/10 bg-[#103039] lg:order-2"
-          >
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_55%_45%,rgba(55,124,131,0.26),transparent_62%)]" />
-            <svg
-              viewBox="0 0 740 500"
-              className="absolute inset-0 size-full"
-              role="img"
-              aria-label="Map of Iran with approximate project regions in Bushehr, Khuzestan, and Fars"
-            >
-              <defs>
-                <linearGradient id="iran-map-fill" x1="0" x2="1" y1="0" y2="1">
-                  <stop offset="0%" stopColor="#245661" />
-                  <stop offset="100%" stopColor="#123940" />
-                </linearGradient>
-                <pattern id="iran-map-dots" width="12" height="12" patternUnits="userSpaceOnUse">
-                  <circle cx="1" cy="1" r="0.8" fill="#c2d8d0" opacity="0.18" />
-                </pattern>
-              </defs>
-
-              <path d={IRAN_OUTLINE} fill="url(#iran-map-fill)" stroke="#89b3b2" strokeWidth="1.6" />
-              <path d={IRAN_OUTLINE} fill="url(#iran-map-dots)" stroke="none" />
-
-              <circle cx="286" cy="133" r="4" fill="#bfced0" />
-              <circle cx="286" cy="133" r="10" fill="none" stroke="#bfced0" strokeOpacity="0.35" />
-
-              {projectRegions.map((region, index) => (
-                <g key={region.name} aria-hidden="true" className="transition-opacity duration-300">
-                  <circle
-                    cx={region.x}
-                    cy={region.y}
-                    r={index === activeIndex ? 23 : 14}
-                    fill="#e5aa6a"
-                    fillOpacity={index === activeIndex ? 0.2 : 0.07}
-                    className="transition-all duration-300"
-                  />
-                  <circle
-                    cx={region.x}
-                    cy={region.y}
-                    r={index === activeIndex ? 7 : 5}
-                    fill={index === activeIndex ? "#ffc47e" : "#a9c5c1"}
-                    stroke="#0b2429"
-                    strokeWidth="2"
-                    className="transition-all duration-300"
-                  />
-                </g>
-              ))}
-
-              <g className="hidden fill-[#d7e6e5] text-[11px] font-semibold tracking-[0.14em] sm:block">
-                <text x="303" y="129">TEHRAN / HQ</text>
-                <text x="74" y="266">KHUZESTAN</text>
-                <text x="381" y="350">FARS</text>
-                <text x="359" y="413">SOUTH PARS</text>
-              </g>
-            </svg>
-
-            <div className="pointer-events-none absolute left-3 top-3 border border-white/15 bg-[#0b2429]/85 px-3 py-2 text-[0.55rem] font-bold uppercase tracking-[0.18em] text-white/70 backdrop-blur-sm sm:left-5 sm:top-5">
-              Iran / project footprint
-            </div>
-            <p className="pointer-events-none absolute bottom-3 right-3 text-[0.55rem] tracking-[0.06em] text-white/55 sm:bottom-5 sm:right-5">
-              Project locations approximate
-            </p>
+          <div className="mx-auto mt-4 flex w-full max-w-[1480px] gap-1.5 sm:mt-5" aria-hidden="true">
+            {stops.map((stop, index) => (
+              <div key={stop.number} className={`h-[2px] flex-1 transition-colors duration-500 ${index <= activeIndex ? "bg-[#edb576]" : "bg-white/20"}`} />
+            ))}
           </div>
         </div>
+
+        <p className="pointer-events-none absolute right-5 top-[clamp(6.75rem,13vh,9rem)] z-20 hidden text-[0.56rem] uppercase tracking-[0.2em] text-white/40 lg:block lg:right-12">Project positions approximate</p>
+        <span className="sr-only">Project areas: Khuzestan, including Abadan and South Azadegan; Fars, including Saadat Abad oilfield; and South Pars in Bushehr.</span>
       </div>
     </section>
   );
