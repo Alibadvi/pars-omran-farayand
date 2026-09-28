@@ -133,11 +133,14 @@ export function ParallaxHero() {
 
       let cancelled = false;
       const revealHero = async () => {
-        await Promise.all(
-          [sky, distant, foreground].map((image) =>
-            image.decode ? image.decode().catch(() => undefined) : Promise.resolve(),
+        await Promise.race([
+          Promise.all(
+            [sky, distant, foreground].map((image) =>
+              image.decode ? image.decode().catch(() => undefined) : Promise.resolve(),
+            ),
           ),
-        );
+          new Promise<void>((resolve) => window.setTimeout(resolve, 600)),
+        ]);
 
         if (!cancelled) intro.play(0);
       };
@@ -183,12 +186,12 @@ export function ParallaxHero() {
               invalidateOnRefresh: true,
             },
           })
-          .fromTo(sky, { yPercent: -1, scale: 1.055 }, { yPercent: 1.5, scale: 1.075 }, 0)
-          .fromTo(distant, { yPercent: 3, scale: 1.015 }, { yPercent: -2, scale: 1.03 }, 0)
-          .fromTo(foreground, { yPercent: 7, scale: 1.01 }, { yPercent: -2, scale: 1.022 }, 0)
-          .fromTo(copy, { yPercent: 0, autoAlpha: 1 }, { yPercent: -6, autoAlpha: 0 }, 0.68)
-          .fromTo(progress, { scaleY: 0 }, { scaleY: 1 }, 0)
-          .fromTo(transition, { autoAlpha: 0 }, { autoAlpha: 1 }, 0.74);
+          .fromTo(sky, { yPercent: -1, scale: 1.05 }, { yPercent: 1, scale: 1.065, duration: 1 }, 0)
+          .fromTo(distant, { yPercent: 2, scale: 1.015 }, { yPercent: -1, scale: 1.025, duration: 1 }, 0)
+          .fromTo(foreground, { yPercent: 5, scale: 1.01 }, { yPercent: -1, scale: 1.018, duration: 1 }, 0)
+          .fromTo(copy, { yPercent: 0, autoAlpha: 1 }, { yPercent: -3, autoAlpha: 0, duration: 0.22 }, 0.78)
+          .fromTo(progress, { scaleY: 0 }, { scaleY: 1, duration: 1 }, 0)
+          .fromTo(transition, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 0.7);
       });
 
       return () => {
@@ -201,7 +204,7 @@ export function ParallaxHero() {
   );
 
   return (
-    <section ref={sectionRef} className="relative h-[145svh] bg-[#09100e] md:h-[180svh]">
+    <section ref={sectionRef} className="relative h-[138svh] bg-[#09100e] md:h-[180svh]">
       <div className="sticky top-0 h-[100svh] overflow-hidden text-white">
         <div className="absolute inset-0 bg-[#121c21]" />
 
@@ -210,14 +213,14 @@ export function ParallaxHero() {
           containerRef={skyWrapRef}
           imageRef={skyRef}
           containerClassName="z-0 will-change-[opacity,transform]"
-          imageClassName="will-change-transform object-[62%_center] md:object-center"
+          imageClassName="will-change-transform object-[64%_center] sm:object-[58%_center] md:object-center"
         />
         <HeroLayer
           layer="layer-02-distant-refinery"
           containerRef={distantWrapRef}
           imageRef={distantRef}
           containerClassName="z-10 will-change-[opacity,transform]"
-          imageClassName="will-change-transform object-[65%_center] brightness-[0.82] saturate-[0.82] drop-shadow-[0_-2px_8px_rgba(225,130,72,0.18)] md:object-center md:brightness-[0.88] md:saturate-[0.86]"
+          imageClassName="will-change-transform object-[64%_center] brightness-[0.82] saturate-[0.82] sm:object-[58%_center] md:object-center md:brightness-[0.88] md:saturate-[0.86] md:drop-shadow-[0_-2px_8px_rgba(225,130,72,0.18)]"
         />
 
         <div className="pointer-events-none absolute inset-0 z-[15] bg-[linear-gradient(90deg,rgba(5,11,10,0.86)_0%,rgba(5,11,10,0.57)_38%,rgba(5,11,10,0.12)_70%),linear-gradient(0deg,rgba(5,11,10,0.62)_0%,transparent_52%)] md:bg-[linear-gradient(90deg,rgba(5,11,10,0.9)_0%,rgba(5,11,10,0.6)_35%,rgba(5,11,10,0.06)_72%),linear-gradient(0deg,rgba(5,11,10,0.62)_0%,transparent_48%)]" />
@@ -228,29 +231,32 @@ export function ParallaxHero() {
           containerRef={foregroundWrapRef}
           imageRef={foregroundRef}
           containerClassName="z-20 will-change-[opacity,transform]"
-          imageClassName="will-change-transform object-[72%_bottom] saturate-[0.86] contrast-[1.02] drop-shadow-[0_-2px_7px_rgba(224,139,83,0.16)] sm:object-[66%_bottom] md:object-center md:saturate-[0.92] md:contrast-[1.035]"
+          imageClassName="will-change-transform object-[64%_center] saturate-[0.86] contrast-[1.02] sm:object-[58%_center] md:object-center md:saturate-[0.92] md:contrast-[1.035] md:drop-shadow-[0_-2px_7px_rgba(224,139,83,0.16)]"
         />
 
-        <div className="pointer-events-none absolute inset-0 z-[28] bg-[linear-gradient(180deg,rgba(4,9,8,0.62)_0%,rgba(4,9,8,0.24)_36%,rgba(4,9,8,0.9)_100%),linear-gradient(90deg,rgba(4,9,8,0.76)_0%,rgba(4,9,8,0.34)_72%,rgba(4,9,8,0.18)_100%)] md:hidden" />
+        <div className="pointer-events-none absolute inset-0 z-[28] bg-[linear-gradient(180deg,rgba(4,9,8,0.24)_0%,rgba(4,9,8,0.18)_34%,rgba(4,9,8,0.76)_68%,rgba(4,9,8,0.96)_100%)] md:hidden" />
         <div className="pointer-events-none absolute inset-0 z-30 bg-[linear-gradient(0deg,rgba(4,9,8,0.76)_0%,transparent_42%)] md:bg-[linear-gradient(0deg,rgba(4,9,8,0.72)_0%,transparent_35%)]" />
         <div className="pointer-events-none absolute inset-0 z-30 hidden bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:48px_48px] opacity-45 md:block" />
 
-        <div className="relative z-40 mx-auto flex h-full w-full max-w-[1480px] items-end px-5 pb-9 pt-24 [@media(max-height:700px)]:pb-5 sm:px-8 sm:pb-12 md:items-center md:pb-0 md:pt-20 lg:px-12">
-          <div ref={copyRef} className="max-w-[560px] will-change-transform md:max-w-[780px]">
-            <div data-hero-copy className="mb-4 flex items-center gap-3 text-[0.58rem] font-bold tracking-[0.2em] text-[#efb16a] uppercase [@media(max-height:620px)]:hidden sm:mb-7 sm:text-xs">
+        <div className="relative z-40 mx-auto flex h-full w-full max-w-[1480px] items-end px-4 pb-[calc(env(safe-area-inset-bottom)+2rem)] pt-24 [@media(max-height:650px)]:pb-4 sm:px-8 md:items-center md:pb-0 md:pt-20 lg:px-12">
+          <div ref={copyRef} className="w-full max-w-[520px] border-l-2 border-[#e2a261] bg-[#061311]/90 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.36)] backdrop-blur-sm will-change-transform [@media(max-height:650px)]:py-4 md:max-w-[780px] md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-none">
+            <div data-hero-copy className="mb-7 hidden items-center gap-3 text-xs font-bold tracking-[0.2em] text-[#efb16a] uppercase md:flex">
               <span className="h-px w-8 bg-[#e2a261] sm:w-12" />
-              <span className="sm:hidden">Energy infrastructure</span>
-              <span className="hidden sm:inline">Oil · Gas · Industrial piping</span>
+              Oil · Gas · Industrial piping
             </div>
 
-            <h1 data-hero-copy className="max-w-[760px] text-[clamp(2.55rem,12vw,3.65rem)] leading-[0.92] font-semibold tracking-[-0.06em] text-balance drop-shadow-[0_5px_26px_rgba(0,0,0,0.72)] sm:text-[clamp(3.5rem,10vw,4.8rem)] sm:leading-[0.9] md:text-[clamp(4.8rem,8.5vw,8.2rem)] md:leading-[0.86] md:tracking-[-0.068em]">
-              Precision beneath every line.
+            <h1 data-hero-copy className="max-w-[760px] text-[clamp(2.3rem,10.6vw,3.35rem)] leading-[0.98] font-semibold tracking-[-0.05em] text-balance [@media(max-height:650px)]:text-[clamp(2.1rem,9.7vw,3rem)] sm:text-[clamp(2.8rem,8vw,3.6rem)] md:text-[clamp(4.8rem,8.5vw,8.2rem)] md:leading-[0.86] md:tracking-[-0.068em] md:drop-shadow-[0_5px_25px_rgba(0,0,0,0.38)]">
+              <span className="md:hidden">Precision in every line.</span>
+              <span className="hidden md:inline">Precision beneath every line.</span>
             </h1>
 
-            <div data-hero-copy className="mt-5 max-w-[650px] border-l border-white/35 pl-4 sm:mt-9 sm:pl-7">
-              <p className="max-w-[520px] text-[0.82rem] leading-5 text-white/82 [@media(max-height:620px)]:hidden sm:max-w-[590px] sm:text-lg sm:leading-8">
-                Engineering, procurement, construction, and piping execution for
-                high-demand energy and industrial environments.
+            <div data-hero-copy className="mt-3 max-w-[650px] md:mt-7 md:border-l md:border-white/30 md:pl-7">
+              <p className="max-w-[520px] text-sm leading-6 text-white/90 [@media(max-height:540px)]:hidden md:max-w-[590px] md:text-lg md:leading-8 md:text-white/72">
+                <span className="md:hidden">Engineering and construction for energy and industry.</span>
+                <span className="hidden md:inline">
+                  Engineering, procurement, construction, and piping execution for
+                  high-demand energy and industrial environments.
+                </span>
               </p>
 
               <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-9">
@@ -264,7 +270,7 @@ export function ParallaxHero() {
 
                 <NavLink
                   to="/capabilities"
-                  className="hidden min-h-12 items-center border border-white/30 bg-black/10 px-5 text-[0.68rem] font-bold tracking-[0.14em] uppercase backdrop-blur-sm transition-colors duration-300 hover:border-white hover:bg-white hover:text-[#101613] sm:inline-flex sm:px-6"
+                  className="hidden min-h-12 items-center border border-white/30 bg-black/10 px-5 text-[0.68rem] font-bold tracking-[0.14em] uppercase backdrop-blur-sm transition-colors duration-300 hover:border-white hover:bg-white hover:text-[#101613] md:inline-flex md:px-6"
                 >
                   Capabilities
                 </NavLink>
@@ -273,7 +279,7 @@ export function ParallaxHero() {
           </div>
         </div>
 
-        <div className="absolute right-5 bottom-6 z-40 hidden items-end gap-4 sm:flex lg:right-12 lg:bottom-10">
+        <div className="absolute right-5 bottom-6 z-40 hidden items-end gap-4 md:flex lg:right-12 lg:bottom-10">
           <span className="pb-1 text-[0.6rem] font-semibold tracking-[0.2em] text-white/45 uppercase [writing-mode:vertical-rl]">
             Scroll to explore
           </span>

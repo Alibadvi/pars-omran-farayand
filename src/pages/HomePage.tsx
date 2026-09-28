@@ -1,5 +1,6 @@
 import { ParallaxHero } from "../components/hero/ParallaxHero";
 import { CapabilitiesSection } from "../components/home/CapabilitiesSection";
+import { LocationsSection } from "../components/home/LocationsSection";
 import { MarqueeDivider } from "../components/home/MarqueeDivider";
 import { PerformanceSection } from "../components/home/PerformanceSection";
 
@@ -10,6 +11,7 @@ export function HomePage() {
       <MarqueeDivider />
       <PerformanceSection />
       <CapabilitiesSection />
+      <LocationsSection />
     </main>
   );
 }
