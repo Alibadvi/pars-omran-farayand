@@ -77,7 +77,7 @@ export function PerformanceSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-50 overflow-hidden bg-[#071b1f] text-white"
+      className="relative z-20 overflow-hidden bg-[#071b1f] text-white"
     >
       <img
         ref={imageRef}
