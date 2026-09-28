@@ -10,9 +10,9 @@ export function Footer() {
   return (
     <footer className="border-t-4 border-[#e2a261] bg-[#0a100e] text-white">
       <div className="bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:40px_40px]">
-        <div className="mx-auto max-w-[1480px] px-5 py-16 sm:px-8 md:py-20 lg:px-12">
-          <div className="grid gap-14 border-b border-white/10 pb-14 md:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_0.8fr_1fr] lg:gap-10 lg:pb-20">
-            <div>
+        <div className="mx-auto max-w-[1480px] px-5 py-12 sm:px-8 md:py-14 lg:px-12">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-10 border-b border-white/10 pb-10 lg:grid-cols-[1.35fr_0.8fr_0.8fr_1fr] lg:gap-10">
+            <div className="col-span-2 lg:col-span-1">
               <NavLink to="/" className="inline-flex items-center gap-4">
                 <span className="grid size-16 place-items-center rounded-sm bg-white p-2">
                   <img
@@ -70,7 +70,7 @@ export function Footer() {
               ))}
             </FooterColumn>
 
-            <div>
+            <div className="col-span-2 sm:col-span-1 lg:col-span-1">
               <h2 className="text-[0.68rem] font-bold tracking-[0.2em] text-white/80 uppercase">
                 Head office
               </h2>
@@ -95,28 +95,13 @@ export function Footer() {
                 </NavLink>
               </div>
 
-              <a
-                href="#"
-                aria-label="LinkedIn"
-                className="mt-8 grid size-10 place-items-center border border-white/15 text-xs font-bold text-white/65 transition-colors hover:border-[#e2a261] hover:text-[#e2a261]"
-              >
-                in
-              </a>
             </div>
           </div>
 
           <div className="flex flex-col gap-4 pt-7 text-[0.66rem] tracking-[0.12em] text-white/35 uppercase sm:flex-row sm:items-center sm:justify-between">
             <p>© {currentYear} Pars Omran Farayand. All rights reserved.</p>
 
-            <div className="flex gap-5">
-              <a href="#" className="transition-colors hover:text-white">
-                Privacy
-              </a>
-
-              <a href="#" className="transition-colors hover:text-white">
-                Legal
-              </a>
-            </div>
+            <p>Engineering · Procurement · Construction</p>
           </div>
         </div>
       </div>
@@ -136,7 +121,7 @@ function FooterColumn({ title, children }: FooterColumnProps) {
         {title}
       </h2>
 
-      <div className="mt-6 flex flex-col items-start gap-3">{children}</div>
+      <div className="mt-6 flex flex-col items-start gap-2.5">{children}</div>
     </div>
   );
 }

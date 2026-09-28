@@ -144,7 +144,7 @@ export function CapabilitiesSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#ede9df] py-10 text-[#10201c] sm:py-12 lg:py-12"
+      className="relative overflow-hidden bg-[#ede9df] py-9 text-[#10201c] sm:py-11"
       aria-labelledby="capabilities-heading"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#10201c]/10" />
@@ -221,7 +221,7 @@ export function CapabilitiesSection() {
         <div className="mt-3 overflow-hidden border border-[#10201c]/10 bg-[#f6f3eb] shadow-[0_18px_44px_rgba(16,32,28,0.07)] lg:grid lg:grid-cols-[1.08fr_0.92fr]">
           <div
             ref={imageStageRef}
-            className="relative h-[220px] overflow-hidden bg-[#14201d] sm:h-[285px] lg:h-[365px]"
+            className="relative h-[190px] overflow-hidden bg-[#14201d] sm:h-[250px] lg:h-[340px]"
           >
             {capabilities.map((capability, index) => (
               <img
@@ -252,7 +252,7 @@ export function CapabilitiesSection() {
 
           </div>
 
-          <div className="flex min-h-[275px] flex-col p-5 sm:min-h-[290px] sm:p-7 lg:min-h-0 lg:p-8">
+          <div className="flex min-h-0 flex-col p-5 sm:p-7 lg:p-8">
             <div ref={detailPanelRef}>
               <p className="text-[0.62rem] font-black uppercase tracking-[0.26em] text-[#bd5b37]">
                 {activeCapability.project}

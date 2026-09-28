@@ -19,8 +19,8 @@ const stops = [
   {
     number: "01",
     kicker: "A closer look",
-    name: "Where we work.",
-    area: "From the world to the field",
+    name: "From the world to the field.",
+    area: "Explore our project regions",
     description: "Scroll to trace our project footprint across Iran's energy and industrial corridors.",
     point: position(54, 32),
     province: "",
@@ -159,7 +159,7 @@ export function LocationsSection() {
     <section
       ref={sectionRef}
       id="locations"
-      className="relative h-[370svh] bg-[#071d25] text-white md:h-[410svh] motion-reduce:h-auto"
+      className="relative h-[340svh] bg-[#071d25] text-white md:h-[370svh] motion-reduce:h-auto"
       aria-labelledby="locations-heading"
     >
       <div className="sticky top-0 isolate h-[100svh] overflow-hidden bg-[#071d25] motion-reduce:relative motion-reduce:h-[720px] sm:motion-reduce:h-[620px]">
@@ -225,7 +225,7 @@ export function LocationsSection() {
             <h2 id="locations-heading" className="mt-3 max-w-[650px] text-[clamp(2.45rem,6vw,5rem)] font-semibold leading-[0.95] tracking-[-0.055em] text-balance">
               Where we work.
             </h2>
-            <p className="mt-3 max-w-[430px] text-xs leading-5 text-[#c5d7d8] sm:text-sm sm:leading-6">
+            <p className="mt-3 max-w-[430px] text-xs leading-5 text-[#c5d7d8] sm:text-sm sm:leading-6 [@media(max-height:570px)]:hidden">
               From refinery units to oilfield and gas facilities.
             </p>
           </div>
@@ -238,7 +238,7 @@ export function LocationsSection() {
               </div>
               <h3 className="mt-2 text-[clamp(1.55rem,3vw,2.5rem)] font-semibold leading-tight tracking-[-0.045em]">{active.name}</h3>
               <p className="mt-1 text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-white/65 sm:text-xs">{active.area}</p>
-              <p className="mt-3 max-w-[410px] text-xs leading-5 text-[#cad8da] sm:text-sm sm:leading-6">{active.description}</p>
+              <p className="mt-3 max-w-[410px] text-xs leading-5 text-[#cad8da] sm:text-sm sm:leading-6 [@media(max-height:520px)]:hidden">{active.description}</p>
               <NavLink to="/projects" className="group mt-4 inline-flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[#edb576] transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#edb576] focus-visible:ring-offset-4 focus-visible:ring-offset-[#0b2832]">
                 Explore projects <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </NavLink>

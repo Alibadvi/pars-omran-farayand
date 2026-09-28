@@ -49,7 +49,7 @@ export function MarqueeDivider() {
   return (
     <div
       ref={rootRef}
-      className="relative z-[60] -mt-20 overflow-hidden border-y border-[#e2a261]/55 bg-[#0a2225]/96 py-5 shadow-[0_-22px_65px_rgba(4,15,16,0.38)] backdrop-blur-md sm:py-6"
+      className="relative z-[60] -mt-14 overflow-hidden border-y border-[#e2a261]/55 bg-[#0a2225]/96 py-5 shadow-[0_-22px_65px_rgba(4,15,16,0.38)] backdrop-blur-md sm:py-5"
     >
       <div ref={trackRef} className="flex w-max will-change-transform">
         <MarqueeGroup />
