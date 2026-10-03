@@ -77,7 +77,8 @@ export function PerformanceSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-20 overflow-hidden bg-[#071b1f] text-white"
+      id="about"
+      className="relative z-20 scroll-mt-24 overflow-hidden bg-[#071b1f] text-white"
     >
       <img
         ref={imageRef}
@@ -116,7 +117,7 @@ export function PerformanceSection() {
 
           <NavLink
             data-performance-reveal
-            to="/capabilities"
+            to="/#capabilities"
             className="mt-7 inline-flex min-h-11 items-center gap-3 bg-[#e2a261] px-6 text-[0.68rem] font-bold tracking-[0.14em] text-[#102024] uppercase transition-colors duration-300 hover:bg-white"
           >
             How we work
