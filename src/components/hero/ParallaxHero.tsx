@@ -269,7 +269,7 @@ export function ParallaxHero() {
                 </NavLink>
 
                 <NavLink
-                  to="/capabilities"
+                  to="/#capabilities"
                   className="hidden min-h-12 items-center border border-white/30 bg-black/10 px-5 text-[0.68rem] font-bold tracking-[0.14em] uppercase backdrop-blur-sm transition-colors duration-300 hover:border-white hover:bg-white hover:text-[#101613] md:inline-flex md:px-6"
                 >
                   Capabilities
