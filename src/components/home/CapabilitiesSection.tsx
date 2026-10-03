@@ -3,6 +3,8 @@ import { NavLink } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
+import { useLanguage } from '../../i18n/LanguageContext'
+import { homeCopy } from '../../i18n/homeCopy'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -16,9 +18,7 @@ const capabilities = [
       'Fabrication, fit-up, welding, hydrotesting, reinstatement, supports, painting, insulation, and mechanical completion for process units and refinery systems.',
     image: '/images/home/capabilities/piping.webp',
     imagePosition: 'center center',
-    metric: '62,000',
-    unit: 'inch-dia',
-    metricDescription: 'Welding and fit-up recorded on South Pars Phase 13',
+    metric: 'EPC',
   },
   {
     number: '02',
@@ -29,9 +29,7 @@ const capabilities = [
       'Surface-facility delivery covering new well locations, flowlines, access roads, electrical works, manifold development, construction, installation, and commissioning.',
     image: '/images/home/capabilities/oilfield.webp',
     imagePosition: 'center center',
-    metric: '2',
-    unit: 'new wells',
-    metricDescription: 'Surface locations included in the development scope',
+    metric: 'Field',
   },
   {
     number: '03',
@@ -42,9 +40,7 @@ const capabilities = [
       'Design, procurement, fabrication, installation, coating, and hydrotesting of atmospheric tanks and their associated steel structures.',
     image: '/images/home/capabilities/tanks.webp',
     imagePosition: 'center center',
-    metric: '710,000',
-    unit: 'kg',
-    metricDescription: 'Tank plate procurement, fabrication, and installation',
+    metric: 'QA/QC',
   },
   {
     number: '04',
@@ -55,13 +51,13 @@ const capabilities = [
       'Installation of turbines, generators, transformers, auxiliary boilers, cooling systems, control panels, piping, and instrumentation cabling.',
     image: '/images/home/capabilities/power.webp',
     imagePosition: 'center center',
-    metric: '460',
-    unit: 'MW',
-    metricDescription: 'Single-shaft combined-cycle power project experience',
+    metric: 'E&I',
   },
 ]
 
 export function CapabilitiesSection() {
+  const { language } = useLanguage()
+  const home = homeCopy[language]
   const [activeIndex, setActiveIndex] = useState(0)
   const sectionRef = useRef<HTMLElement>(null)
   const imageStageRef = useRef<HTMLDivElement>(null)
@@ -70,6 +66,7 @@ export function CapabilitiesSection() {
   const interactionReadyRef = useRef(false)
 
   const activeCapability = capabilities[activeIndex]
+  const activeCopy = home.capabilities.items[activeIndex]
 
   useEffect(() => {
     const section = sectionRef.current
@@ -155,13 +152,13 @@ export function CapabilitiesSection() {
           <div data-capability-reveal>
             <p className="flex items-center gap-3 text-[0.62rem] font-black uppercase tracking-[0.3em] text-[#bd5b37]">
               <span className="h-px w-8 bg-[#bd5b37]" />
-              Core capabilities
+              {home.capabilities.eyebrow}
             </p>
             <h2
               id="capabilities-heading"
               className="mt-3 max-w-[760px] text-[clamp(2.25rem,5.3vw,3.75rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-balance"
             >
-              Expertise, built together.
+              {home.capabilities.title}
             </h2>
           </div>
 
@@ -169,14 +166,14 @@ export function CapabilitiesSection() {
             data-capability-reveal
             className="max-w-[470px] text-sm leading-6 text-[#53615d] sm:text-base lg:justify-self-end"
           >
-            Piping, mechanical, civil, and fabrication work delivered by one accountable project team.
+            {home.capabilities.intro}
           </p>
         </div>
 
         <div
           data-capability-reveal
           className="mt-7 grid grid-cols-2 gap-2 lg:grid-cols-4"
-          aria-label="Capability selector"
+          aria-label={home.capabilities.selector}
         >
           {capabilities.map((capability, index) => {
             const isActive = index === activeIndex
@@ -192,7 +189,7 @@ export function CapabilitiesSection() {
                     setActiveIndex(index)
                   }
                 }}
-                className={`group min-h-14 min-w-0 border px-3 py-2.5 text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#bd5b37] focus-visible:ring-offset-2 sm:px-4 ${
+                className={`group min-h-14 min-w-0 border px-3 py-2.5 text-start transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#bd5b37] focus-visible:ring-offset-2 sm:px-4 ${
                   isActive
                     ? 'border-[#10201c] bg-[#10201c] text-white'
                     : 'border-[#10201c]/12 bg-[#f6f3eb] text-[#10201c] hover:-translate-y-0.5 hover:border-[#bd5b37]/55 hover:bg-white'
@@ -204,7 +201,7 @@ export function CapabilitiesSection() {
                   </span>
                   <ArrowUpRight
                     size={14}
-                    className={`transition-all duration-300 ${
+                    className={`rtl-flip transition-all duration-300 ${
                       isActive
                         ? 'translate-x-0 opacity-100'
                         : '-translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'
@@ -212,7 +209,7 @@ export function CapabilitiesSection() {
                   />
                 </span>
                 <span className="mt-1 block text-[0.62rem] font-bold uppercase leading-4 tracking-[0.1em] sm:text-[0.68rem]">
-                  {capability.tab}
+                  {home.capabilities.items[index].tab}
                 </span>
               </button>
             )
@@ -242,12 +239,12 @@ export function CapabilitiesSection() {
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,15,13,0.12)_0%,transparent_48%,rgba(7,15,13,0.22)_100%)]" />
             <div className="absolute inset-x-0 bottom-0 h-1 bg-[#e2a35d]" />
 
-            <div className="absolute left-4 top-4 flex items-center gap-3 border border-white/25 bg-[#0d1715]/75 px-3 py-2 backdrop-blur-md sm:left-6 sm:top-6">
+            <div className="absolute start-4 top-4 flex items-center gap-3 border border-white/25 bg-[#0d1715]/75 px-3 py-2 backdrop-blur-md sm:start-6 sm:top-6">
               <span className="text-[0.62rem] font-black tracking-[0.22em] text-[#e2a35d]">
                 {activeCapability.number}
               </span>
               <span className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-white">
-                Selected expertise
+                {home.capabilities.selected}
               </span>
             </div>
 
@@ -256,13 +253,13 @@ export function CapabilitiesSection() {
           <div className="flex min-h-0 flex-col p-5 sm:p-7 lg:p-8">
             <div ref={detailPanelRef}>
               <p className="text-[0.62rem] font-black uppercase tracking-[0.26em] text-[#bd5b37]">
-                {activeCapability.project}
+                {activeCopy.project}
               </p>
               <h3 className="mt-2 text-[clamp(1.65rem,3vw,2.35rem)] font-semibold leading-[1.05] tracking-[-0.04em]">
-                {activeCapability.title}
+                {activeCopy.title}
               </h3>
               <p className="mt-3 max-w-[560px] text-sm leading-6 text-[#53615d]">
-                {activeCapability.description}
+                {activeCopy.description}
               </p>
             </div>
 
@@ -271,15 +268,15 @@ export function CapabilitiesSection() {
               className="mt-5 flex items-end justify-between gap-5 border-t border-[#10201c]/14 pt-4"
             >
               <div className="flex min-w-0 items-end gap-3">
-                <span className="text-[clamp(2.15rem,4.3vw,3.25rem)] font-semibold leading-none tracking-[-0.055em] text-[#bd5b37]">
+                <span dir="ltr" className="latin-copy text-[clamp(2.15rem,4.3vw,3.25rem)] font-semibold leading-none tracking-[-0.055em] text-[#bd5b37]">
                   {activeCapability.metric}
                 </span>
                 <span className="pb-1 text-[0.62rem] font-black uppercase tracking-[0.2em] text-[#65716d]">
-                  {activeCapability.unit}
+                  {activeCopy.unit}
                 </span>
               </div>
-              <p className="hidden max-w-[210px] text-right text-xs leading-5 text-[#65716d] xl:block">
-                {activeCapability.metricDescription}
+              <p className="hidden max-w-[210px] text-end text-xs leading-5 text-[#65716d] xl:block">
+                {activeCopy.metricDescription}
               </p>
             </div>
 
@@ -287,12 +284,12 @@ export function CapabilitiesSection() {
               to="/projects"
               className="group mt-auto inline-flex w-fit items-center gap-3 pt-4 text-[0.64rem] font-black uppercase tracking-[0.2em] text-[#10201c] transition-colors hover:text-[#bd5b37] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#bd5b37] focus-visible:ring-offset-4"
             >
-              View project experience
+              {home.capabilities.view}
               <span className="grid h-9 w-9 place-items-center border border-[#10201c]/25 transition-all duration-300 group-hover:border-[#bd5b37] group-hover:bg-[#bd5b37] group-hover:text-white">
                 <ArrowUpRight
                   size={15}
                   strokeWidth={1.8}
-                  className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  className="rtl-flip transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                 />
               </span>
             </NavLink>

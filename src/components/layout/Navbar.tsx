@@ -7,6 +7,8 @@ import { Link, useLocation } from "react-router-dom";
 import { navigationItems } from "../../data/navigation";
 import { useLanguage } from "../../i18n/LanguageContext";
 
+const languageLabel = { en: "Language", fa: "زبان", ar: "اللغة" } as const;
+
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -170,7 +172,8 @@ export function Navbar() {
         <Link
           to="/"
           aria-label="Pars Omran Farayand homepage"
-          className="relative z-50 flex items-center gap-3"
+          dir="ltr"
+          className="latin-copy relative z-50 flex items-center gap-3"
         >
           <span className="grid size-12 place-items-center rounded-sm border border-white/20 bg-white p-1.5 shadow-lg lg:size-14">
             <img
@@ -209,7 +212,7 @@ export function Navbar() {
               {t.nav[item.key]}
 
               <span
-                className={`absolute right-2.5 bottom-1 left-2.5 h-px origin-left bg-[#e2a261] transition-transform duration-300 xl:right-3 xl:left-3 ${
+                className={`nav-underline absolute right-2.5 bottom-1 left-2.5 h-px origin-left bg-[#e2a261] transition-transform duration-300 xl:right-3 xl:left-3 ${
                   isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                 }`}
               />
@@ -229,7 +232,7 @@ export function Navbar() {
             className="hidden items-center gap-2 border border-[#e2a261]/70 px-3 py-2.5 text-[0.64rem] font-semibold tracking-[0.1em] text-white uppercase transition-colors duration-300 hover:bg-[#e2a261] hover:text-[#111714] 2xl:flex"
           >
             {t.nav.portal}
-            <ArrowUpRight size={15} />
+            <ArrowUpRight size={15} className="rtl-flip" />
           </Link>
 
           <button
@@ -276,7 +279,7 @@ export function Navbar() {
               >
                 <span>{t.nav[item.key]}</span>
 
-                <span className="text-xs tracking-[0.15em] text-white/35">
+                <span dir="ltr" className="latin-copy text-xs tracking-[0.15em] text-white/35">
                   {String(index + 1).padStart(2, "0")}
                 </span>
               </Link>
@@ -284,7 +287,7 @@ export function Navbar() {
           </nav>
 
           <div data-mobile-item className="mt-7 flex items-center justify-between border-y border-white/10 py-4">
-            <span className="text-[0.62rem] font-bold tracking-[0.16em] text-white/45 uppercase">Language</span>
+            <span className="text-[0.62rem] font-bold tracking-[0.16em] text-white/45 uppercase">{languageLabel[language]}</span>
             <LanguageSelector language={language} options={options} onChange={setLanguage} mobile />
           </div>
 
@@ -295,7 +298,7 @@ export function Navbar() {
             className="mt-8 flex items-center justify-between bg-[#e2a261] px-5 py-4 text-sm font-bold tracking-[0.12em] text-[#101613] uppercase"
           >
             {t.nav.portal}
-            <ArrowUpRight size={19} />
+            <ArrowUpRight size={19} className="rtl-flip" />
           </Link>
 
           <p
@@ -319,7 +322,7 @@ type LanguageSelectorProps = {
 
 function LanguageSelector({ language, options, onChange, mobile = false }: LanguageSelectorProps) {
   return (
-    <div className={`flex items-center border border-white/15 bg-black/10 ${mobile ? "h-10" : "h-9"}`} aria-label="Language selector">
+    <div dir="ltr" className={`flex items-center overflow-hidden rounded-full border border-white/15 bg-black/15 p-0.5 backdrop-blur-sm ${mobile ? "h-10" : "h-9"}`} aria-label="Language selector">
       {options.map((option) => (
         <button
           key={option.code}
@@ -328,7 +331,7 @@ function LanguageSelector({ language, options, onChange, mobile = false }: Langu
           aria-label={option.label}
           aria-pressed={language === option.code}
           onClick={() => onChange(option.code)}
-          className={`grid h-full min-w-9 place-items-center px-2 text-[0.62rem] font-bold transition-colors ${
+          className={`grid h-full min-w-9 place-items-center rounded-full px-2 text-[0.62rem] font-bold transition-colors ${
             language === option.code
               ? "bg-[#e2a261] text-[#10201c]"
               : "text-white/65 hover:bg-white/10 hover:text-white"
