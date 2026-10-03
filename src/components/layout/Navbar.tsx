@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ArrowUpRight, Menu, X } from "lucide-react";
-import { NavLink, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { navigationItems } from "../../data/navigation";
+import { useLanguage } from "../../i18n/LanguageContext";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -14,7 +15,8 @@ export function Navbar() {
   const overlayRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
+  const { language, setLanguage, options, t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 28);
@@ -147,6 +149,13 @@ export function Navbar() {
   );
 
   const solidHeader = isScrolled || isOpen;
+  const isNavigationActive = (href: string) => {
+    const [itemPath, itemHash = ""] = href.split("#");
+
+    if (itemHash) return pathname === itemPath && hash === `#${itemHash}`;
+    if (href === "/") return pathname === "/" && !hash;
+    return pathname === href;
+  };
 
   return (
     <header
@@ -158,7 +167,7 @@ export function Navbar() {
       }`}
     >
       <div className="mx-auto flex h-[78px] max-w-[1480px] items-center justify-between px-5 sm:px-8 lg:h-[92px] lg:px-12">
-        <NavLink
+        <Link
           to="/"
           aria-label="Pars Omran Farayand homepage"
           className="relative z-50 flex items-center gap-3"
@@ -180,49 +189,48 @@ export function Navbar() {
               Farayand
             </span>
           </span>
-        </NavLink>
+        </Link>
 
         <nav
           aria-label="Primary navigation"
           className="hidden items-center gap-1 lg:flex"
         >
-          {navigationItems.map((item) => (
-            <NavLink
+          {navigationItems.map((item) => {
+            const isActive = isNavigationActive(item.href);
+
+            return (
+            <Link
               key={item.href}
               to={item.href}
-              className={({ isActive }) =>
-                `group relative px-3 py-3 text-[0.72rem] font-semibold tracking-[0.13em] uppercase transition-colors duration-300 xl:px-4 ${
-                  isActive
-                    ? "text-[#e2a261]"
-                    : "text-white/75 hover:text-white"
-                }`
-              }
+              className={`group relative px-2.5 py-3 text-[0.7rem] font-semibold tracking-[0.11em] uppercase transition-colors duration-300 xl:px-3 ${
+                isActive ? "text-[#e2a261]" : "text-white/75 hover:text-white"
+              }`}
             >
-              {({ isActive }) => (
-                <>
-                  {item.label}
+              {t.nav[item.key]}
 
-                  <span
-                    className={`absolute right-3 bottom-1 left-3 h-px origin-left bg-[#e2a261] transition-transform duration-300 xl:right-4 xl:left-4 ${
-                      isActive
-                        ? "scale-x-100"
-                        : "scale-x-0 group-hover:scale-x-100"
-                    }`}
-                  />
-                </>
-              )}
-            </NavLink>
-          ))}
+              <span
+                className={`absolute right-2.5 bottom-1 left-2.5 h-px origin-left bg-[#e2a261] transition-transform duration-300 xl:right-3 xl:left-3 ${
+                  isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                }`}
+              />
+            </Link>
+          )})}
         </nav>
 
         <div className="relative z-50 flex items-center gap-2">
-          <NavLink
+          <LanguageSelector
+            language={language}
+            options={options}
+            onChange={setLanguage}
+          />
+
+          <Link
             to="/admin"
-            className="hidden items-center gap-2 border border-[#e2a261]/70 px-4 py-2.5 text-[0.68rem] font-semibold tracking-[0.12em] text-white uppercase transition-colors duration-300 hover:bg-[#e2a261] hover:text-[#111714] xl:flex"
+            className="hidden items-center gap-2 border border-[#e2a261]/70 px-3 py-2.5 text-[0.64rem] font-semibold tracking-[0.1em] text-white uppercase transition-colors duration-300 hover:bg-[#e2a261] hover:text-[#111714] 2xl:flex"
           >
-            Project portal
+            {t.nav.portal}
             <ArrowUpRight size={15} />
-          </NavLink>
+          </Link>
 
           <button
             type="button"
@@ -249,51 +257,86 @@ export function Navbar() {
         >
           <div className="mb-8 flex items-center gap-3 text-[0.65rem] font-semibold tracking-[0.22em] text-white/45 uppercase">
             <span className="h-px w-10 bg-[#e2a261]" />
-            Navigation
+            {t.nav.navigation}
           </div>
 
           <nav aria-label="Mobile navigation" className="flex flex-col">
-            {navigationItems.map((item, index) => (
-              <NavLink
+            {navigationItems.map((item, index) => {
+              const isActive = isNavigationActive(item.href);
+
+              return (
+              <Link
                 key={item.href}
                 to={item.href}
                 data-mobile-item
                 onClick={() => setIsOpen(false)}
-                className={({ isActive }) =>
-                  `flex items-center justify-between border-t border-white/10 py-4 text-[clamp(1.55rem,8vw,2.4rem)] font-medium tracking-[-0.04em] transition-colors ${
-                    isActive
-                      ? "text-[#e2a261]"
-                      : "text-white hover:text-[#e2a261]"
-                  }`
-                }
+                className={`flex items-center justify-between border-t border-white/10 py-4 text-[clamp(1.55rem,8vw,2.4rem)] font-medium tracking-[-0.04em] transition-colors ${
+                  isActive ? "text-[#e2a261]" : "text-white hover:text-[#e2a261]"
+                }`}
               >
-                <span>{item.label}</span>
+                <span>{t.nav[item.key]}</span>
 
                 <span className="text-xs tracking-[0.15em] text-white/35">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-              </NavLink>
-            ))}
+              </Link>
+            )})}
           </nav>
 
-          <NavLink
+          <div data-mobile-item className="mt-7 flex items-center justify-between border-y border-white/10 py-4">
+            <span className="text-[0.62rem] font-bold tracking-[0.16em] text-white/45 uppercase">Language</span>
+            <LanguageSelector language={language} options={options} onChange={setLanguage} mobile />
+          </div>
+
+          <Link
             to="/admin"
             data-mobile-item
             onClick={() => setIsOpen(false)}
             className="mt-8 flex items-center justify-between bg-[#e2a261] px-5 py-4 text-sm font-bold tracking-[0.12em] text-[#101613] uppercase"
           >
-            Project portal
+            {t.nav.portal}
             <ArrowUpRight size={19} />
-          </NavLink>
+          </Link>
 
           <p
             data-mobile-item
             className="mt-auto pt-12 text-xs leading-6 tracking-[0.08em] text-white/40 uppercase"
           >
-            Engineering · Procurement · Construction
+            {t.nav.discipline}
           </p>
         </div>
       </div>
     </header>
+  );
+}
+
+type LanguageSelectorProps = {
+  language: "en" | "fa" | "ar";
+  options: readonly { code: "en" | "fa" | "ar"; label: string; nativeLabel: string }[];
+  onChange: (language: "en" | "fa" | "ar") => void;
+  mobile?: boolean;
+};
+
+function LanguageSelector({ language, options, onChange, mobile = false }: LanguageSelectorProps) {
+  return (
+    <div className={`flex items-center border border-white/15 bg-black/10 ${mobile ? "h-10" : "h-9"}`} aria-label="Language selector">
+      {options.map((option) => (
+        <button
+          key={option.code}
+          type="button"
+          title={option.label}
+          aria-label={option.label}
+          aria-pressed={language === option.code}
+          onClick={() => onChange(option.code)}
+          className={`grid h-full min-w-9 place-items-center px-2 text-[0.62rem] font-bold transition-colors ${
+            language === option.code
+              ? "bg-[#e2a261] text-[#10201c]"
+              : "text-white/65 hover:bg-white/10 hover:text-white"
+          }`}
+        >
+          {option.nativeLabel}
+        </button>
+      ))}
+    </div>
   );
 }

@@ -1,15 +1,23 @@
+export type NavigationKey =
+  | "home"
+  | "about"
+  | "capabilities"
+  | "projects"
+  | "hse"
+  | "contact";
+
 export type NavigationItem = {
-  label: string;
+  key: NavigationKey;
   href: string;
 };
 
 export const navigationItems: NavigationItem[] = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Capabilities", href: "/capabilities" },
-  { label: "Projects", href: "/projects" },
-  { label: "HSE", href: "/hse" },
-  { label: "Contact", href: "/contact" },
+  { key: "home", href: "/" },
+  { key: "about", href: "/#about" },
+  { key: "capabilities", href: "/#capabilities" },
+  { key: "projects", href: "/projects" },
+  { key: "hse", href: "/#hse" },
+  { key: "contact", href: "/contact" },
 ];
 
 export const capabilityItems = [

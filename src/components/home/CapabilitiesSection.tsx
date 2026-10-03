@@ -144,7 +144,8 @@ export function CapabilitiesSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#ede9df] py-9 text-[#10201c] sm:py-11"
+      id="capabilities"
+      className="relative scroll-mt-24 overflow-hidden bg-[#ede9df] py-9 text-[#10201c] sm:py-11"
       aria-labelledby="capabilities-heading"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#10201c]/10" />
@@ -283,10 +284,10 @@ export function CapabilitiesSection() {
             </div>
 
             <NavLink
-              to="/capabilities"
+              to="/projects"
               className="group mt-auto inline-flex w-fit items-center gap-3 pt-4 text-[0.64rem] font-black uppercase tracking-[0.2em] text-[#10201c] transition-colors hover:text-[#bd5b37] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#bd5b37] focus-visible:ring-offset-4"
             >
-              Explore capabilities
+              View project experience
               <span className="grid h-9 w-9 place-items-center border border-[#10201c]/25 transition-all duration-300 group-hover:border-[#bd5b37] group-hover:bg-[#bd5b37] group-hover:text-white">
                 <ArrowUpRight
                   size={15}
