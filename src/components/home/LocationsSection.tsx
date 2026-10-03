@@ -5,6 +5,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown, ArrowUpRight, Crosshair } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { FEATURED_PROVINCES, IRAN_PATH, PROVINCE_LINES, WORLD_PATH } from "../../data/mapPaths";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { homeCopy } from "../../i18n/homeCopy";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -72,11 +74,14 @@ const markers = [
 ];
 
 export function LocationsSection() {
+  const { language } = useLanguage();
+  const home = homeCopy[language];
   const sectionRef = useRef<HTMLElement>(null);
   const mapRef = useRef<SVGSVGElement>(null);
   const activeRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const active = stops[activeIndex];
+  const activeCopy = home.locations.stops[activeIndex];
 
   useGSAP(() => {
     const section = sectionRef.current;
@@ -173,7 +178,7 @@ export function LocationsSection() {
           preserveAspectRatio="xMidYMid meet"
           className="pointer-events-none absolute inset-0 h-full w-full"
           role="img"
-          aria-label="World map zooming into project regions in Iran: Khuzestan, Fars and Bushehr"
+          aria-label={home.locations.areas}
         >
           <defs>
             <linearGradient id="location-iran" x1="0" x2="1" y1="0" y2="1">
@@ -220,32 +225,32 @@ export function LocationsSection() {
         <div className="pointer-events-none absolute inset-0 z-20 flex flex-col px-5 pt-[clamp(6.25rem,13vh,8.5rem)] pb-6 sm:px-8 lg:px-12 lg:pb-10">
           <div className="mx-auto w-full max-w-[1480px]">
             <div className="flex items-center gap-3 text-[0.61rem] font-bold uppercase tracking-[0.24em] text-[#edb576] sm:text-[0.69rem]">
-              <span className="h-px w-8 bg-[#edb576]" /> Our footprint / 0{activeIndex + 1}
+              <span className="h-px w-8 bg-[#edb576]" /> {home.locations.eyebrow} / <span dir="ltr">0{activeIndex + 1}</span>
             </div>
             <h2 id="locations-heading" className="mt-3 max-w-[650px] text-[clamp(2.45rem,6vw,5rem)] font-semibold leading-[0.95] tracking-[-0.055em] text-balance">
-              Where we work.
+              {home.locations.title}
             </h2>
             <p className="mt-3 max-w-[430px] text-xs leading-5 text-[#c5d7d8] sm:text-sm sm:leading-6 [@media(max-height:570px)]:hidden">
-              From refinery units to oilfield and gas facilities.
+              {home.locations.intro}
             </p>
           </div>
 
           <div className="mx-auto mt-auto flex w-full max-w-[1480px] items-end justify-between gap-4">
             <div className="pointer-events-auto w-full max-w-[490px] border border-white/15 bg-[#0b2832]/90 p-4 shadow-[0_22px_60px_rgba(0,0,0,0.18)] backdrop-blur-xl sm:p-6">
               <div className="flex items-center justify-between gap-4">
-                <span className="text-[0.59rem] font-bold uppercase tracking-[0.19em] text-[#edb576] sm:text-[0.65rem]">{active.kicker}</span>
+                <span className="text-[0.59rem] font-bold uppercase tracking-[0.19em] text-[#edb576] sm:text-[0.65rem]">{activeCopy.kicker}</span>
                 <Crosshair size={17} className="shrink-0 text-[#edb576]" aria-hidden="true" />
               </div>
-              <h3 className="mt-2 text-[clamp(1.55rem,3vw,2.5rem)] font-semibold leading-tight tracking-[-0.045em]">{active.name}</h3>
-              <p className="mt-1 text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-white/65 sm:text-xs">{active.area}</p>
-              <p className="mt-3 max-w-[410px] text-xs leading-5 text-[#cad8da] sm:text-sm sm:leading-6 [@media(max-height:520px)]:hidden">{active.description}</p>
+              <h3 className="mt-2 text-[clamp(1.55rem,3vw,2.5rem)] font-semibold leading-tight tracking-[-0.045em]">{activeCopy.name}</h3>
+              <p className="mt-1 text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-white/65 sm:text-xs">{activeCopy.area}</p>
+              <p className="mt-3 max-w-[410px] text-xs leading-5 text-[#cad8da] sm:text-sm sm:leading-6 [@media(max-height:520px)]:hidden">{activeCopy.description}</p>
               <NavLink to="/projects" className="group mt-4 inline-flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[#edb576] transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#edb576] focus-visible:ring-offset-4 focus-visible:ring-offset-[#0b2832]">
-                Explore projects <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                {home.locations.explore} <ArrowUpRight size={15} className="rtl-flip transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </NavLink>
             </div>
 
             <div className="hidden items-end gap-5 pb-1 lg:flex">
-              <span className="text-[0.58rem] font-bold uppercase tracking-[0.18em] text-white/55">Scroll to explore</span>
+              <span className="text-[0.58rem] font-bold uppercase tracking-[0.18em] text-white/55">{home.locations.scroll}</span>
               <ArrowDown size={17} className="text-[#edb576]" aria-hidden="true" />
             </div>
           </div>
@@ -257,8 +262,8 @@ export function LocationsSection() {
           </div>
         </div>
 
-        <p className="pointer-events-none absolute right-5 top-[clamp(6.75rem,13vh,9rem)] z-20 hidden text-[0.56rem] uppercase tracking-[0.2em] text-white/40 lg:block lg:right-12">Project positions approximate</p>
-        <span className="sr-only">Project areas: Khuzestan, including Abadan and South Azadegan; Fars, including Saadat Abad oilfield; and South Pars in Bushehr.</span>
+        <p className="pointer-events-none absolute end-5 top-[clamp(6.75rem,13vh,9rem)] z-20 hidden text-[0.56rem] uppercase tracking-[0.2em] text-white/40 lg:block lg:end-12">{home.locations.approximate}</p>
+        <span className="sr-only">{home.locations.areas}</span>
       </div>
     </section>
   );
