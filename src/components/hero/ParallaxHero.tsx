@@ -227,7 +227,7 @@ export function ParallaxHero() {
           imageClassName="will-change-transform object-[64%_center] brightness-[0.82] saturate-[0.82] sm:object-[58%_center] md:object-center md:brightness-[0.88] md:saturate-[0.86] md:drop-shadow-[0_-2px_8px_rgba(225,130,72,0.18)]"
         />
 
-        <div className="rtl-gradient-start pointer-events-none absolute inset-0 z-[15] bg-[linear-gradient(90deg,rgba(5,11,10,0.86)_0%,rgba(5,11,10,0.57)_38%,rgba(5,11,10,0.12)_70%),linear-gradient(0deg,rgba(5,11,10,0.62)_0%,transparent_52%)] md:bg-[linear-gradient(90deg,rgba(5,11,10,0.9)_0%,rgba(5,11,10,0.6)_35%,rgba(5,11,10,0.06)_72%),linear-gradient(0deg,rgba(5,11,10,0.62)_0%,transparent_48%)]" />
+        <div className="pointer-events-none absolute inset-0 z-[15] bg-[linear-gradient(90deg,rgba(5,11,10,0.86)_0%,rgba(5,11,10,0.57)_38%,rgba(5,11,10,0.12)_70%),linear-gradient(0deg,rgba(5,11,10,0.62)_0%,transparent_52%)] md:bg-[linear-gradient(90deg,rgba(5,11,10,0.9)_0%,rgba(5,11,10,0.6)_35%,rgba(5,11,10,0.06)_72%),linear-gradient(0deg,rgba(5,11,10,0.62)_0%,transparent_48%)]" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[16] h-[52%] bg-[radial-gradient(ellipse_at_72%_35%,rgba(224,125,65,0.1),transparent_46%),linear-gradient(0deg,rgba(6,13,12,0.4),transparent_78%)]" />
 
         <HeroLayer
@@ -243,7 +243,7 @@ export function ParallaxHero() {
         <div className="pointer-events-none absolute inset-0 z-30 hidden bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:48px_48px] opacity-45 md:block" />
 
         <div className="relative z-40 mx-auto flex h-full w-full max-w-[1480px] items-end px-4 pb-[calc(env(safe-area-inset-bottom)+2rem)] pt-24 [@media(max-height:650px)]:pb-4 sm:px-8 md:items-center md:pb-0 md:pt-20 lg:px-12">
-          <div ref={copyRef} className="w-full max-w-[520px] border-s-2 border-[#e2a261] bg-[#061311]/90 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.36)] backdrop-blur-sm will-change-transform [@media(max-height:650px)]:py-4 md:max-w-[780px] md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-none">
+          <div ref={copyRef} className="hero-copy-panel w-full max-w-[520px] border-s-2 border-[#e2a261] bg-[#061311]/90 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.36)] backdrop-blur-sm will-change-transform [@media(max-height:650px)]:py-4 md:max-w-[780px] md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-none">
             <div data-hero-copy className="mb-7 hidden items-center gap-3 text-xs font-bold tracking-[0.2em] text-[#efb16a] uppercase md:flex">
               <span className="h-px w-8 bg-[#e2a261] sm:w-12" />
               {home.hero.kicker}
