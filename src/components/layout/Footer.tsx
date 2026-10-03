@@ -2,10 +2,17 @@ import type { ReactNode } from "react";
 import { ArrowUpRight, Mail, MapPin } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
-import { capabilityItems, navigationItems } from "../../data/navigation";
+import { navigationItems } from "../../data/navigation";
+import { useLanguage } from "../../i18n/LanguageContext";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const { language, t } = useLanguage();
+  const capabilityItems = {
+    en: ["Engineering", "Procurement", "Construction", "Industrial piping"],
+    fa: ["مهندسی", "تأمین", "اجرا", "پایپینگ صنعتی"],
+    ar: ["الهندسة", "التوريد", "الإنشاء", "الأنابيب الصناعية"],
+  }[language];
 
   return (
     <footer className="border-t-4 border-[#e2a261] bg-[#0a100e] text-white">
@@ -34,32 +41,31 @@ export function Footer() {
               </NavLink>
 
               <p className="mt-7 max-w-md text-sm leading-7 text-white/55">
-                Delivering disciplined engineering, procurement, construction,
-                and industrial piping solutions for complex energy projects.
+                {t.footer.statement}
               </p>
 
               <NavLink
                 to="/contact"
                 className="mt-8 inline-flex items-center gap-3 border-b border-[#e2a261] pb-2 text-xs font-semibold tracking-[0.16em] uppercase transition-colors hover:text-[#e2a261]"
               >
-                Start a conversation
+                {t.footer.conversation}
                 <ArrowUpRight size={16} />
               </NavLink>
             </div>
 
-            <FooterColumn title="Company">
+            <FooterColumn title={t.footer.company}>
               {navigationItems.slice(1).map((item) => (
                 <NavLink
                   key={item.href}
                   to={item.href}
                   className="text-sm leading-6 text-white/50 transition-colors duration-200 hover:text-[#e2a261]"
                 >
-                  {item.label}
+                  {t.nav[item.key]}
                 </NavLink>
               ))}
             </FooterColumn>
 
-            <FooterColumn title="Capabilities">
+            <FooterColumn title={t.footer.capabilities}>
               {capabilityItems.map((item) => (
                 <span
                   key={item}
@@ -72,7 +78,7 @@ export function Footer() {
 
             <div className="col-span-2 sm:col-span-1 lg:col-span-1">
               <h2 className="text-[0.68rem] font-bold tracking-[0.2em] text-white/80 uppercase">
-                Head office
+                {t.footer.office}
               </h2>
 
               <div className="mt-6 space-y-5 text-sm leading-6 text-white/55">
@@ -80,9 +86,9 @@ export function Footer() {
                   <MapPin size={17} className="mt-1 shrink-0 text-[#e2a261]" />
 
                   <span>
-                    Tehran, Iran
+                    {t.footer.location}
                     <br />
-                    Project operations nationwide
+                    {t.footer.nationwide}
                   </span>
                 </p>
 
@@ -91,7 +97,7 @@ export function Footer() {
                   className="flex items-center gap-3 transition-colors hover:text-white"
                 >
                   <Mail size={17} className="shrink-0 text-[#e2a261]" />
-                  Contact the company
+                  {t.footer.contact}
                 </NavLink>
               </div>
 
@@ -99,9 +105,9 @@ export function Footer() {
           </div>
 
           <div className="flex flex-col gap-4 pt-7 text-[0.66rem] tracking-[0.12em] text-white/35 uppercase sm:flex-row sm:items-center sm:justify-between">
-            <p>© {currentYear} Pars Omran Farayand. All rights reserved.</p>
+            <p>© {currentYear} Pars Omran Farayand. {t.footer.rights}</p>
 
-            <p>Engineering · Procurement · Construction</p>
+            <p>{t.nav.discipline}</p>
           </div>
         </div>
       </div>
