@@ -42,7 +42,7 @@ export function SafetySection() {
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} className="relative isolate overflow-hidden bg-[#0b2429] text-white" aria-labelledby="safety-heading">
+    <section ref={sectionRef} id="hse" className="relative isolate scroll-mt-24 overflow-hidden bg-[#0b2429] text-white" aria-labelledby="safety-heading">
       <img
         ref={imageRef}
         src="/images/home/safety-site.webp"
@@ -69,7 +69,7 @@ export function SafetySection() {
           </p>
           <NavLink
             data-safety-reveal
-            to="/hse"
+            to="/contact"
             className="group mt-7 inline-flex min-h-11 items-center gap-3 border border-[#e2a261] bg-[#e2a261] px-5 text-[0.66rem] font-bold uppercase tracking-[0.15em] text-[#10201c] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:border-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#0b2429]"
           >
             Our HSE approach
