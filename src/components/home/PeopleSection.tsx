@@ -64,7 +64,7 @@ export function PeopleSection() {
 
             <div data-people-reveal className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
               <NavLink
-                to="/about"
+                to="/#about"
                 className="group inline-flex min-h-11 items-center gap-3 bg-[#102b2f] px-5 text-[0.65rem] font-bold uppercase tracking-[0.15em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#bd5b37] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#bd5b37] focus-visible:ring-offset-4"
               >
                 About the company
