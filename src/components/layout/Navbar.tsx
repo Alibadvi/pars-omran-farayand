@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import { navigationItems } from "../../data/navigation";
@@ -227,14 +227,6 @@ export function Navbar() {
             onChange={setLanguage}
           />
 
-          <Link
-            to="/admin"
-            className="hidden items-center gap-2 border border-[#e2a261]/70 px-3 py-2.5 text-[0.64rem] font-semibold tracking-[0.1em] text-white uppercase transition-colors duration-300 hover:bg-[#e2a261] hover:text-[#111714] 2xl:flex"
-          >
-            {t.nav.portal}
-            <ArrowUpRight size={15} className="rtl-flip" />
-          </Link>
-
           <button
             type="button"
             onClick={() => setIsOpen((current) => !current)}
@@ -290,16 +282,6 @@ export function Navbar() {
             <span className="text-[0.62rem] font-bold tracking-[0.16em] text-white/45 uppercase">{languageLabel[language]}</span>
             <LanguageSelector language={language} options={options} onChange={setLanguage} mobile />
           </div>
-
-          <Link
-            to="/admin"
-            data-mobile-item
-            onClick={() => setIsOpen(false)}
-            className="mt-8 flex items-center justify-between bg-[#e2a261] px-5 py-4 text-sm font-bold tracking-[0.12em] text-[#101613] uppercase"
-          >
-            {t.nav.portal}
-            <ArrowUpRight size={19} className="rtl-flip" />
-          </Link>
 
           <p
             data-mobile-item

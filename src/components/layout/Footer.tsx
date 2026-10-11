@@ -20,7 +20,7 @@ export function Footer() {
         <div className="mx-auto max-w-[1480px] px-5 py-12 sm:px-8 md:py-14 lg:px-12">
           <div className="grid grid-cols-2 gap-x-5 gap-y-10 border-b border-white/10 pb-10 lg:grid-cols-[1.35fr_0.8fr_0.8fr_1fr] lg:gap-10">
             <div className="col-span-2 lg:col-span-1">
-              <NavLink to="/" className="inline-flex items-center gap-4">
+              <NavLink to="/" dir="ltr" className="latin-copy inline-flex items-center gap-4">
                 <span className="grid size-16 place-items-center rounded-sm bg-white p-2">
                   <img
                     src="/brand/pars-omran-logo.webp"
@@ -49,7 +49,7 @@ export function Footer() {
                 className="mt-8 inline-flex items-center gap-3 border-b border-[#e2a261] pb-2 text-xs font-semibold tracking-[0.16em] uppercase transition-colors hover:text-[#e2a261]"
               >
                 {t.footer.conversation}
-                <ArrowUpRight size={16} />
+                <ArrowUpRight size={16} className="rtl-flip" />
               </NavLink>
             </div>
 
@@ -105,7 +105,7 @@ export function Footer() {
           </div>
 
           <div className="flex flex-col gap-4 pt-7 text-[0.66rem] tracking-[0.12em] text-white/35 uppercase sm:flex-row sm:items-center sm:justify-between">
-            <p>© {currentYear} Pars Omran Farayand. {t.footer.rights}</p>
+            <p><span dir="ltr" className="latin-copy inline-block">© {currentYear} Pars Omran Farayand.</span> {t.footer.rights}</p>
 
             <p>{t.nav.discipline}</p>
           </div>

@@ -4,7 +4,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowUpRight,
-  CheckCircle2,
   Factory,
   Filter,
   MapPin,
@@ -74,7 +73,7 @@ export function ProjectsPage() {
           aria-hidden="true"
           className="absolute inset-0 size-full object-cover object-[62%_center] opacity-60"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,18,21,0.99)_0%,rgba(5,29,33,0.94)_42%,rgba(5,29,33,0.46)_76%,rgba(5,29,33,0.55)_100%)]" />
+        <div className="rtl-gradient-start absolute inset-0 bg-[linear-gradient(90deg,rgba(4,18,21,0.99)_0%,rgba(5,29,33,0.94)_42%,rgba(5,29,33,0.46)_76%,rgba(5,29,33,0.55)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:48px_48px]" />
         <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#071b1f] to-transparent" />
 
@@ -90,10 +89,9 @@ export function ProjectsPage() {
             {t.projects.intro}
           </p>
 
-          <div data-page-hero className="mt-9 grid max-w-[920px] grid-cols-3 border-y border-white/16 bg-[#071b1f]/35 backdrop-blur-sm">
-            <Metric value="9" label={t.projects.completed} />
-            <Metric value="2017–23" label={t.projects.period} />
-            <Metric value="100%" label={t.projects.acceptance} />
+          <div data-page-hero className="mt-9 grid max-w-[560px] grid-cols-2 border-y border-white/16 bg-[#071b1f]/35 backdrop-blur-sm">
+            <Metric value={String(projects.length).padStart(2, "0")} label={t.projects.completed} />
+            <Metric value={String(new Set(projects.map((project) => project.sector)).size).padStart(2, "0")} label={t.projects.sectors} />
           </div>
         </div>
       </section>
@@ -170,9 +168,8 @@ export function ProjectsPage() {
                     <p className="text-[0.6rem] font-black tracking-[0.22em] text-[#bd5b37] uppercase">
                       {t.projects.featured}
                     </p>
-                    <span className="inline-flex items-center gap-2 text-[0.58rem] font-bold tracking-[0.12em] text-[#49715f] uppercase">
-                      <CheckCircle2 size={15} />
-                      {t.projects.status}
+                    <span className="text-[0.58rem] font-bold tracking-[0.12em] text-[#49715f] uppercase">
+                      {filters.find((item) => item.value === project.sector)?.label}
                     </span>
                   </div>
 
@@ -221,7 +218,7 @@ export function ProjectsPage() {
           </div>
           <Link to="/contact" className="group inline-flex min-h-12 w-fit items-center gap-3 bg-[#e2a261] px-6 text-[0.68rem] font-black tracking-[0.14em] text-[#10201c] uppercase transition-colors hover:bg-white">
             {t.projects.ctaButton}
-            <ArrowUpRight size={17} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            <ArrowUpRight size={17} className="rtl-flip transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </Link>
         </div>
       </section>

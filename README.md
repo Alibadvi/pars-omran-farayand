@@ -1,75 +1,28 @@
-# React + TypeScript + Vite
+# Pars Omran Farayand
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Public company website in English, Persian, and Arabic. The public pages are Home, Projects, and Contact. The project portal is a separate future application; this repository does not provide authentication or private document storage.
 
-Currently, two official plugins are available:
+## Develop
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm ci
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+## Build the public site
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm ci
+npm run build:static
 ```
+
+The deployable files are in `dist/`. The build creates separate HTML shells for `/projects` and `/contact` with route-specific titles and descriptions. Language selection is client-side and stored on the visitor's device.
+
+## Deploy on cPanel Apache
+
+1. Add the domain to cPanel, point it to the correct document root, and enable HTTPS.
+2. Upload the **contents** of `dist/` to that document root (for the main domain, usually `public_html/`). Do not upload `src/`, `node_modules/`, or the enclosing `dist` folder.
+3. In File Manager, enable **Show Hidden Files** and confirm `.htaccess` is alongside `index.html`. It serves the two public routes on direct visits and shows the app's 404 page for unknown paths.
+4. Visit `/`, `/projects`, and `/contact` directly over HTTPS. The contact form opens the visitor's email application with a prepared message; it does not submit to a server.
+
+This brochure site needs neither a Node.js application nor a database. Keep the private portal on a separate authenticated service when it is built; do not put project files in `public/` or `dist/`.

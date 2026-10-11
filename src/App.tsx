@@ -1,11 +1,13 @@
+import { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { MainLayout } from "./components/layout/MainLayout";
 import { LanguageProvider } from "./i18n/LanguageContext";
-import { ContactPage } from "./pages/ContactPage";
-import { HomePage } from "./pages/HomePage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
-import { ProjectsPage } from "./pages/ProjectsPage";
+
+const HomePage = lazy(() => import("./pages/HomePage").then(({ HomePage }) => ({ default: HomePage })));
+const ProjectsPage = lazy(() => import("./pages/ProjectsPage").then(({ ProjectsPage }) => ({ default: ProjectsPage })));
+const ContactPage = lazy(() => import("./pages/ContactPage").then(({ ContactPage }) => ({ default: ContactPage })));
 
 function App() {
   return (
@@ -16,16 +18,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="projects" element={<ProjectsPage />} />
             <Route path="contact" element={<ContactPage />} />
-            <Route
-              path="admin"
-              element={
-                <PlaceholderPage eyebrow="Secure access" title="Project portal" />
-              }
-            />
-            <Route
-              path="*"
-              element={<PlaceholderPage eyebrow="404" title="Page not found" />}
-            />
+            <Route path="*" element={<PlaceholderPage />} />
           </Route>
         </Routes>
       </LanguageProvider>

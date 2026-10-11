@@ -13,10 +13,16 @@ import {
 import { useLanguage } from "../i18n/LanguageContext";
 
 const COMPANY_EMAIL = "p.omranfarayand@gmail.com";
+const contactChrome = {
+  en: { signature: "Engineering clarity.", signatureSecond: "Field accountability.", city: "Tehran" },
+  fa: { signature: "شفافیت در مهندسی.", signatureSecond: "پاسخ‌گویی در اجرا.", city: "تهران" },
+  ar: { signature: "وضوح في الهندسة.", signatureSecond: "مسؤولية في التنفيذ.", city: "طهران" },
+} as const;
 
 export function ContactPage() {
   const pageRef = useRef<HTMLElement>(null);
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
+  const chrome = contactChrome[language];
 
   useGSAP(
     () => {
@@ -56,7 +62,7 @@ export function ContactPage() {
           aria-hidden="true"
           className="absolute inset-0 size-full object-cover object-[68%_center] opacity-50"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,19,22,0.99)_0%,rgba(5,28,33,0.94)_46%,rgba(5,28,33,0.38)_100%)]" />
+        <div className="rtl-gradient-start absolute inset-0 bg-[linear-gradient(90deg,rgba(4,19,22,0.99)_0%,rgba(5,28,33,0.94)_46%,rgba(5,28,33,0.38)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:46px_46px]" />
 
         <div className="relative mx-auto grid min-h-[520px] max-w-[1480px] items-end gap-10 px-5 pb-12 sm:min-h-[570px] sm:px-8 sm:pb-16 lg:grid-cols-[1.1fr_0.6fr] lg:px-12">
@@ -74,8 +80,8 @@ export function ContactPage() {
           </div>
 
           <div data-contact-hero className="hidden border-s border-[#e2a261]/55 ps-7 lg:block">
-            <span className="text-[0.62rem] font-black tracking-[0.22em] text-white/45 uppercase">Pars Omran Farayand</span>
-            <p className="mt-4 text-2xl leading-tight font-semibold">Engineering clarity.<br />Field accountability.</p>
+            <span dir="ltr" className="latin-copy text-[0.62rem] font-black tracking-[0.22em] text-white/45 uppercase">Pars Omran Farayand</span>
+            <p className="mt-4 text-2xl leading-tight font-semibold">{chrome.signature}<br />{chrome.signatureSecond}</p>
           </div>
         </div>
       </section>
@@ -124,7 +130,7 @@ export function ContactPage() {
                 <div className="flex flex-col items-start gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
                   <button type="submit" className="group inline-flex min-h-12 items-center gap-3 bg-[#10201c] px-6 text-[0.67rem] font-black tracking-[0.14em] text-white uppercase transition-colors hover:bg-[#bd5b37]">
                     {t.contact.submit}
-                    <ArrowUpRight size={17} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                    <ArrowUpRight size={17} className="rtl-flip transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                   </button>
                   <p className="max-w-sm text-xs leading-5 text-[#6f7a76]">{t.contact.note}</p>
                 </div>
@@ -148,7 +154,7 @@ export function ContactPage() {
               className="mt-7 inline-flex items-center gap-3 border-b border-[#10201c] pb-2 text-[0.66rem] font-black tracking-[0.14em] uppercase transition-colors hover:border-[#bd5b37] hover:text-[#bd5b37]"
             >
               {t.contact.directions}
-              <ArrowUpRight size={16} />
+              <ArrowUpRight size={16} className="rtl-flip" />
             </a>
           </div>
 
@@ -163,8 +169,8 @@ export function ContactPage() {
             </div>
             <div className="absolute right-5 bottom-5 left-5 flex items-end justify-between border-t border-white/14 pt-4 text-white sm:right-7 sm:bottom-7 sm:left-7">
               <div>
-                <span className="block text-[0.58rem] font-bold tracking-[0.2em] text-[#e2a261] uppercase">35.7219° N · 51.3347° E</span>
-                <strong className="mt-2 block text-2xl font-semibold">Tehran</strong>
+                <span dir="ltr" className="latin-copy block text-[0.58rem] font-bold tracking-[0.2em] text-[#e2a261] uppercase">35.7219° N · 51.3347° E</span>
+                <strong className="mt-2 block text-2xl font-semibold">{chrome.city}</strong>
               </div>
               <Building2 size={27} className="text-white/55" />
             </div>
@@ -185,7 +191,7 @@ function ContactRow({ icon: Icon, label, value, href }: { icon: IconComponent; l
       </span>
       <span>
         <span className="block text-[0.57rem] font-black tracking-[0.18em] text-white/42 uppercase">{label}</span>
-        <span className="mt-1 block text-sm font-semibold" dir={value.match(/^\d|@/) ? "ltr" : undefined}>{value}</span>
+        <span className={`mt-1 block text-sm font-semibold ${value.match(/^\d|@/) ? "latin-copy" : ""}`} dir={value.match(/^\d|@/) ? "ltr" : undefined}>{value}</span>
       </span>
     </>
   );
@@ -205,8 +211,9 @@ function Field({ label, name, placeholder, type = "text", required = false }: { 
         name={name}
         type={type}
         required={required}
+        dir={type === "email" || type === "tel" ? "ltr" : undefined}
         placeholder={placeholder}
-        className="h-12 w-full border border-[#10201c]/16 bg-white px-4 text-sm outline-none transition-colors placeholder:text-[#10201c]/35 focus:border-[#bd5b37]"
+        className={`h-12 w-full border border-[#10201c]/16 bg-white px-4 text-sm outline-none transition-colors placeholder:text-[#10201c]/35 focus:border-[#bd5b37] ${type === "email" || type === "tel" ? "latin-copy" : ""}`}
       />
     </label>
   );
