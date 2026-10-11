@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   }).toString()
   const response = NextResponse.redirect(authorize)
   response.cookies.set('outlook_oauth_state', state, {
-    httpOnly: true, secure: request.nextUrl.protocol === 'https:', sameSite: 'lax',
+    httpOnly: true, secure: new URL(process.env.PORTAL_URL || request.url).protocol === 'https:', sameSite: 'lax',
     path: '/api/portal/mail/callback', maxAge: 600,
   })
   return response

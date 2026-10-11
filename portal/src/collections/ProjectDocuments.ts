@@ -7,7 +7,7 @@ export const ProjectDocuments: CollectionConfig = {
   slug: 'project-documents',
   admin: { useAsTitle: 'title', group: 'Projects', defaultColumns: ['title', 'project', 'category', 'updatedAt'] },
   upload: {
-    staticDir: path.resolve(process.cwd(), 'private-files'),
+    staticDir: process.env.PORTAL_UPLOAD_DIR || path.resolve(process.cwd(), '..', 'portal-private-files'),
     mimeTypes: ['application/pdf', 'image/jpeg', 'image/png', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
   },
   access: {

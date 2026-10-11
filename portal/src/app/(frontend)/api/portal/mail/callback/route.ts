@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     connectedAddress: MAILBOX, connectedAt: new Date().toISOString(),
     refreshTokenEncrypted: encryptToken(token.refresh_token), inboxCursor: '',
   } })
-  const response = NextResponse.redirect(new URL('/?mail=connected', request.url))
+  const response = NextResponse.redirect(new URL('/?mail=connected', process.env.PORTAL_URL || request.url))
   response.cookies.set('outlook_oauth_state', '', { path: '/api/portal/mail/callback', maxAge: 0 })
   return response
 }

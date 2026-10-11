@@ -7,6 +7,7 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   experimental: { useTypeScriptCli: false },
   async headers() {
     return [{ source: '/api/project-documents/file/:path*', headers: [{ key: 'Cache-Control', value: 'private, no-store' }] }]

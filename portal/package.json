@@ -7,6 +7,8 @@
     "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",
+    "package:cpanel": "node scripts/package-cpanel.mjs && tar -czf portal-cpanel.tar.gz -C .release-stage . && node scripts/cleanup-cpanel.mjs",
+    "migrate:status": "payload migrate:status",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
     "bootstrap:admin": "payload run src/scripts/bootstrap-admin.ts"
@@ -35,6 +37,6 @@
     "dompurify": "3.4.16"
   },
   "engines": {
-    "node": ">=24.15.0"
+    "node": ">=20.9.0"
   }
 }

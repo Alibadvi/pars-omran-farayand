@@ -9,7 +9,7 @@ export const SCOPES = 'offline_access User.Read Mail.ReadWrite Mail.Send'
 export function mailConfig() {
   const clientId = process.env.MS_GRAPH_CLIENT_ID
   const clientSecret = process.env.MS_GRAPH_CLIENT_SECRET
-  const portalURL = process.env.NEXT_PUBLIC_PORTAL_URL
+  const portalURL = process.env.PORTAL_URL
   const key = process.env.PORTAL_ENCRYPTION_KEY
   if (!clientId || !clientSecret || !portalURL || !MAILBOX || !key || !/^[0-9a-f]{64}$/i.test(key)) {
     throw new Error('Outlook integration is not configured.')

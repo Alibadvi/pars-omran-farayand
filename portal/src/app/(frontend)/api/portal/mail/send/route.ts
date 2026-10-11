@@ -3,9 +3,10 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { accessToken, graphRequest, MAILBOX } from '@/lib/mail'
 import { authenticatedSession, canAccessProject } from '@/lib/session'
+import { hasPortalOrigin } from '@/lib/origin'
 
 export async function POST(request: NextRequest) {
-  if (request.headers.get('origin') !== request.nextUrl.origin) return NextResponse.json({ error: 'Invalid origin' }, { status: 403 })
+  if (!hasPortalOrigin(request)) return NextResponse.json({ error: 'Invalid origin' }, { status: 403 })
   const session = await authenticatedSession(request.headers)
   if (!session) return NextResponse.json({ error: 'ورود به حساب لازم است.' }, { status: 401 })
 

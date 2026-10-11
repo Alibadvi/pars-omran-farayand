@@ -6,3 +6,5 @@ private-files/
 next-env.d.ts
 src/payload-types.ts
 *.tsbuildinfo
+portal-cpanel.tar.gz
+.release-stage/
