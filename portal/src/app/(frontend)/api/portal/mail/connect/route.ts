@@ -8,7 +8,10 @@ export async function GET(request: NextRequest) {
   const session = await authenticatedSession(request.headers)
   if (session?.identity.role !== 'hq-admin') return NextResponse.json({ error: 'Tehran administrator access required.' }, { status: 403 })
 
-  const { clientId, redirectURI } = mailConfig()
+  let clientId: string
+  let redirectURI: string
+  try { ({ clientId, redirectURI } = mailConfig()) }
+  catch { return NextResponse.json({ error: 'اتصال Outlook هنوز روی سرور تنظیم نشده است.' }, { status: 503 }) }
   const state = randomBytes(32).toString('hex')
   const authorize = new URL(`${OAUTH}/authorize`)
   authorize.search = new URLSearchParams({

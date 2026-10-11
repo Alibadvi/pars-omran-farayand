@@ -1,25 +1,29 @@
 import Link from 'next/link'
-import Image from 'next/image'
+import type { Where } from 'payload'
 
+import { PortalHeader } from '@/components/PortalHeader'
+import { ProjectDirectory } from '@/components/ProjectDirectory'
+import { formatPortalDate } from '@/lib/presentation'
 import { getPortalSession } from '@/lib/session'
 
 export default async function HomePage() {
   const { payload, identity, user } = await getPortalSession()
-  const projects = await payload.find({
-    collection: 'projects', depth: 0, limit: 100, sort: '-updatedAt', overrideAccess: true,
-    where: identity.role.startsWith('hq-') ? {} : { id: { in: identity.assignedProjects } },
-  })
+  const where: Where = identity.role.startsWith('hq-') ? {} : { id: { in: identity.assignedProjects } }
+  const [projects, active] = await Promise.all([
+    payload.find({ collection: 'projects', depth: 0, limit: 100, sort: '-updatedAt', overrideAccess: true, where }),
+    payload.count({ collection: 'projects', overrideAccess: true, where: { and: [where, { status: { equals: 'active' } }] } }),
+  ])
 
   return <div className="shell">
-    <header className="topbar"><div><span className="brand-mark"><Image alt="نشان پارس عمران فرآیند" src="/logo.webp" width={34} height={34} /></span><strong>پرتال پروژه‌های پارس عمران فرآیند</strong></div><nav><span>{user.name || user.email}</span><Link href="/admin">مدیریت</Link><Link href="/admin/logout">خروج</Link></nav></header>
+    <PortalHeader name={user.name || user.email} />
     <main className="container">
-      <p className="eyebrow">دفتر مرکزی / سایت‌های پروژه</p><h1>پروژه‌ها</h1>
-      <p className="lede">اسناد، گفتگوهای داخلی و مکاتبات بیرونی هر پروژه در یک محل نگهداری می‌شوند.</p>
-      <div className="project-grid">{projects.docs.map((project) => <Link className="project-card" href={`/projects/${project.id}`} key={project.id}>
-        <div className="card-top"><span>{project.code}</span><span className="pill">{project.status}</span></div><h2>{project.name}</h2><p>{project.site}</p><span className="card-link">ورود به پروژه ←</span>
-      </Link>)}</div>
-      {projects.docs.length === 0 && <div className="empty">هنوز پروژه‌ای برای حساب شما ثبت نشده است.</div>}
-      {identity.role === 'hq-admin' && <p className="manage-link"><Link href="/admin/collections/projects/create">ایجاد پروژه جدید ←</Link></p>}
+      <section className="dashboard-hero">
+        <div className="hero-copy"><p className="eyebrow">پارس عمران فرآیند / فضای کاری داخلی</p><h1>مرکز پروژه‌ها</h1><p>اسناد، گفتگوهای دفتر تهران و سایت‌های پروژه، و مکاتبات بیرونی را در فضای هر پروژه پیگیری کنید.</p>
+          {identity.role === 'hq-admin' && <Link className="button button-gold" href="/admin/collections/projects/create">ایجاد پروژه جدید <span aria-hidden="true">←</span></Link>}
+        </div>
+        <div className="hero-stats" aria-label="نمای کلی پروژه‌ها"><div><strong>{projects.totalDocs.toLocaleString('fa-IR')}</strong><span>کل پروژه‌های قابل مشاهده</span></div><div><strong>{active.totalDocs.toLocaleString('fa-IR')}</strong><span>پروژه در حال اجرا</span></div></div>
+      </section>
+      <ProjectDirectory total={projects.totalDocs} projects={projects.docs.map((project) => ({ id: project.id, code: project.code, name: project.name, site: project.site, status: project.status, updated: formatPortalDate(project.updatedAt) }))} />
     </main>
   </div>
 }

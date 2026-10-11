@@ -1,0 +1,21 @@
+@import '@fontsource/vazirmatn/arabic-400.css';
+@import '@fontsource/vazirmatn/arabic-700.css';
+@import '@fontsource/vazirmatn/latin-400.css';
+@import '@fontsource/vazirmatn/latin-700.css';
+
+:root {
+  --font-body: Vazirmatn, Tahoma, Arial, sans-serif;
+  --style-radius-s: 6px;
+  --style-radius-m: 9px;
+  --style-radius-l: 13px;
+}
+
+body, button, input, textarea, select { font-family: var(--font-body); }
+input[type='email'], input[type='url'] { direction: ltr; text-align: left; unicode-bidi: isolate; }
+
+[data-theme='light'] {
+  --theme-bg: #f6f7f4;
+  --theme-input-bg: #fff;
+}
+
+::selection { background: #d8e9d5; color: #173a2c; }

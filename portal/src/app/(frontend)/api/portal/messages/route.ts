@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import type { PayloadRequest } from 'payload'
 import { hasPortalOrigin } from '@/lib/origin'
 
 import { authenticatedSession, canAccessProject } from '@/lib/session'
@@ -16,6 +17,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'اطلاعات پیام یا دسترسی به پروژه نامعتبر است.' }, { status: 400 })
   }
 
-  await session.payload.create({ collection: 'project-messages', overrideAccess: true, data: { project: id, subject, body, author: session.user.id } })
+  await session.payload.create({
+    collection: 'project-messages', overrideAccess: true,
+    req: { user: { ...session.user, collection: 'users' } as PayloadRequest['user'] },
+    data: { project: id, subject, body, author: session.user.id },
+  })
   return NextResponse.json({ ok: true })
 }

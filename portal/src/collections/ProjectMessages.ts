@@ -4,7 +4,8 @@ import { portalIdentity, projectRecordAccess, requireProjectAccess } from '../li
 
 export const ProjectMessages: CollectionConfig = {
   slug: 'project-messages',
-  admin: { useAsTitle: 'subject', group: 'Communication', defaultColumns: ['subject', 'project', 'author', 'createdAt'] },
+  labels: { singular: 'پیام داخلی', plural: 'گفتگوهای داخلی' },
+  admin: { useAsTitle: 'subject', group: 'ارتباطات', defaultColumns: ['subject', 'project', 'author', 'createdAt'] },
   access: {
     read: ({ req }) => projectRecordAccess(req),
     create: async ({ req }) => Boolean(await portalIdentity(req)),
@@ -19,9 +20,9 @@ export const ProjectMessages: CollectionConfig = {
     }],
   },
   fields: [
-    { name: 'project', type: 'relationship', relationTo: 'projects', required: true, index: true },
-    { name: 'subject', type: 'text', required: true },
-    { name: 'body', type: 'textarea', required: true },
-    { name: 'author', type: 'relationship', relationTo: 'users', required: true, admin: { readOnly: true } },
+    { name: 'project', label: 'پروژه', type: 'relationship', relationTo: 'projects', required: true, index: true },
+    { name: 'subject', label: 'موضوع', type: 'text', required: true },
+    { name: 'body', label: 'متن پیام', type: 'textarea', required: true },
+    { name: 'author', label: 'فرستنده', type: 'relationship', relationTo: 'users', required: true, admin: { readOnly: true } },
   ],
 }

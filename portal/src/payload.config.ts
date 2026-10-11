@@ -1,6 +1,7 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { fa } from '@payloadcms/translations/languages/fa'
 import path from 'node:path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'node:url'
@@ -21,6 +22,7 @@ export default buildConfig({
   collections: [Users, Projects, ProjectDocuments, ProjectMessages, ExternalEmails],
   globals: [MailState],
   editor: lexicalEditor(),
+  i18n: { fallbackLanguage: 'fa', supportedLanguages: { fa } },
   secret: process.env.PAYLOAD_SECRET || '',
   db: localSQLite ? sqliteAdapter({
     client: { url: `file:${path.resolve(process.cwd(), '.local-data/portal.db')}` },

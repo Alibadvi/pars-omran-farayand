@@ -24,6 +24,8 @@ export default function SetupPage() {
         }),
       })
       const result = await response.json()
+      if (response.status === 409) { setComplete(true); return }
+      if (response.status === 404) throw new Error('کلید راه‌اندازی معتبر نیست. کلید همین محیط را از تنظیمات محلی یا سرور بردارید.')
       if (!response.ok) throw new Error(result.error || 'Setup failed.')
       form.reset()
       setComplete(true)
@@ -36,7 +38,7 @@ export default function SetupPage() {
     <section className="panel">
       <p className="eyebrow">راه‌اندازی اولیه</p>
       <h1>مدیر دفتر تهران</h1>
-      {complete ? <p>حساب مدیر ساخته شد. کلید راه‌اندازی را از تنظیمات سرور حذف کنید و سپس از مسیر <a href="/admin/login">ورود به پنل</a> وارد شوید.</p> :
+      {complete ? <p>راه‌اندازی اولیه کامل است. برای ادامه، از صفحه <a href="/admin/login">ورود به پنل مدیریت</a> استفاده کنید. در نصب نهایی، کلید راه‌اندازی را از تنظیمات سرور حذف کنید.</p> :
         <form className="compose" onSubmit={submit}>
           <label>نام<input name="name" required maxLength={120} /></label>
           <label>ایمیل<input name="email" type="email" autoComplete="email" required /></label>

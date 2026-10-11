@@ -4,8 +4,9 @@ import { portalIdentity } from '../lib/access'
 
 export const Users: CollectionConfig = {
   slug: 'users',
+  labels: { singular: 'همکار', plural: 'همکاران' },
   auth: true,
-  admin: { useAsTitle: 'email', group: 'Administration' },
+  admin: { useAsTitle: 'email', group: 'مدیریت' },
   access: {
     admin: ({ req }) => Boolean(req.user),
     create: async ({ req }) => (await portalIdentity(req))?.role === 'hq-admin',
@@ -18,20 +19,20 @@ export const Users: CollectionConfig = {
     delete: async ({ req }) => (await portalIdentity(req))?.role === 'hq-admin',
   },
   fields: [
-    { name: 'name', type: 'text', required: true },
+    { name: 'name', label: 'نام و نام خانوادگی', type: 'text', required: true },
     {
-      name: 'role', type: 'select', required: true, defaultValue: 'site-staff',
+      name: 'role', label: 'نقش', type: 'select', required: true, defaultValue: 'site-staff',
       options: [
-        { label: 'Tehran administrator', value: 'hq-admin' },
-        { label: 'Tehran staff', value: 'hq-staff' },
-        { label: 'Site manager', value: 'site-manager' },
-        { label: 'Site staff', value: 'site-staff' },
+        { label: 'مدیر دفتر تهران', value: 'hq-admin' },
+        { label: 'همکار دفتر تهران', value: 'hq-staff' },
+        { label: 'مدیر سایت پروژه', value: 'site-manager' },
+        { label: 'همکار سایت پروژه', value: 'site-staff' },
       ],
       access: { update: ({ req }) => req.user?.role === 'hq-admin' },
     },
     {
-      name: 'assignedProjects', type: 'relationship', relationTo: 'projects', hasMany: true,
-      admin: { description: 'Site roles can only see these projects. Tehran roles can see all projects.' },
+      name: 'assignedProjects', label: 'پروژه‌های مجاز', type: 'relationship', relationTo: 'projects', hasMany: true,
+      admin: { description: 'همکاران سایت فقط پروژه‌های تعیین‌شده را می‌بینند. دفتر تهران به همه پروژه‌ها دسترسی دارد.' },
     },
   ],
 }

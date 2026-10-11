@@ -5,7 +5,8 @@ import { portalIdentity, projectRecordAccess, requireProjectAccess } from '../li
 
 export const ProjectDocuments: CollectionConfig = {
   slug: 'project-documents',
-  admin: { useAsTitle: 'title', group: 'Projects', defaultColumns: ['title', 'project', 'category', 'updatedAt'] },
+  labels: { singular: 'سند پروژه', plural: 'اسناد پروژه' },
+  admin: { useAsTitle: 'title', group: 'پروژه‌ها', defaultColumns: ['title', 'project', 'category', 'updatedAt'] },
   upload: {
     staticDir: process.env.PORTAL_UPLOAD_DIR || (process.env.NODE_ENV !== 'production' && process.env.PORTAL_LOCAL_SQLITE === '1'
       ? path.resolve(process.cwd(), '.local-data/files')
@@ -34,18 +35,18 @@ export const ProjectDocuments: CollectionConfig = {
     }],
   },
   fields: [
-    { name: 'title', type: 'text', required: true },
-    { name: 'project', type: 'relationship', relationTo: 'projects', required: true, index: true },
-    { name: 'category', type: 'select', required: true, options: [
-      { label: 'Contract', value: 'contract' },
-      { label: 'Drawing', value: 'drawing' },
-      { label: 'Correspondence', value: 'correspondence' },
-      { label: 'Progress report', value: 'progress' },
-      { label: 'Other', value: 'other' },
+    { name: 'title', label: 'عنوان سند', type: 'text', required: true },
+    { name: 'project', label: 'پروژه', type: 'relationship', relationTo: 'projects', required: true, index: true },
+    { name: 'category', label: 'دسته‌بندی', type: 'select', required: true, options: [
+      { label: 'قرارداد', value: 'contract' },
+      { label: 'نقشه', value: 'drawing' },
+      { label: 'مکاتبه', value: 'correspondence' },
+      { label: 'گزارش پیشرفت', value: 'progress' },
+      { label: 'سایر', value: 'other' },
     ] },
-    { name: 'notes', type: 'textarea' },
-    { name: 'supersedes', type: 'relationship', relationTo: 'project-documents', admin: { description: 'Select the previous document when uploading a new revision.' } },
-    { name: 'revision', type: 'number', required: true, defaultValue: 1, admin: { readOnly: true } },
-    { name: 'uploadedBy', type: 'relationship', relationTo: 'users', admin: { readOnly: true } },
+    { name: 'notes', label: 'توضیحات', type: 'textarea' },
+    { name: 'supersedes', label: 'نسخه قبلی', type: 'relationship', relationTo: 'project-documents', admin: { description: 'اگر این فایل نسخه جدیدی از یک سند است، نسخه قبلی را انتخاب کنید.' } },
+    { name: 'revision', label: 'شماره نسخه', type: 'number', required: true, defaultValue: 1, admin: { readOnly: true } },
+    { name: 'uploadedBy', label: 'بارگذاری‌کننده', type: 'relationship', relationTo: 'users', admin: { readOnly: true } },
   ],
 }
