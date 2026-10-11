@@ -22,7 +22,7 @@ The deployable files are in `dist/`. The build creates separate HTML shells for 
 
 1. Add the domain to cPanel, point it to the correct document root, and enable HTTPS.
 2. Upload the **contents** of `dist/` to that document root (for the main domain, usually `public_html/`). Do not upload `src/`, `node_modules/`, or the enclosing `dist` folder.
-3. In File Manager, enable **Show Hidden Files** and confirm `.htaccess` is alongside `index.html`. It serves the two public routes on direct visits and shows the app's 404 page for unknown paths.
+3. In File Manager, enable **Show Hidden Files** and confirm `.htaccess` is alongside `index.html`. If the host already has a `.htaccess`, merge these rules with its existing HTTPS and domain rules instead of overwriting it. The included rules serve the two public routes on direct visits and show the app's 404 page for unknown paths.
 4. Visit `/`, `/projects`, and `/contact` directly over HTTPS. The contact form opens the visitor's email application with a prepared message; it does not submit to a server.
 
 This brochure site needs neither a Node.js application nor a database. Keep the private portal on a separate authenticated service when it is built; do not put project files in `public/` or `dist/`.

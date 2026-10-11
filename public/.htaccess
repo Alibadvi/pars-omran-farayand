@@ -1,6 +1,3 @@
-DirectoryIndex index.html
-Options -MultiViews
-
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteRule ^(projects|contact)/?$ $1/index.html [L]
