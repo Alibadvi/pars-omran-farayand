@@ -1,4 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'node:path'
 import { buildConfig } from 'payload'
@@ -13,6 +14,7 @@ import { MailState } from './globals/MailState'
 import { migrations } from './migrations'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
+const localSQLite = process.env.NODE_ENV !== 'production' && process.env.PORTAL_LOCAL_SQLITE === '1'
 
 export default buildConfig({
   admin: { user: Users.slug, importMap: { baseDir: dirname } },
@@ -20,7 +22,9 @@ export default buildConfig({
   globals: [MailState],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
-  db: postgresAdapter({
+  db: localSQLite ? sqliteAdapter({
+    client: { url: `file:${path.resolve(process.cwd(), '.local-data/portal.db')}` },
+  }) : postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URL || '' },
     disableCreateDatabase: true,
     prodMigrations: migrations,
