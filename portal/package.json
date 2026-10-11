@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "dev:local": "node scripts/setup-local.mjs && next dev",
+    "dev:local": "node scripts/setup-local.mjs && next dev --port 3000",
     "build": "next build --webpack",
     "start": "next start",
     "package:cpanel": "node scripts/package-cpanel.mjs && tar -czf portal-cpanel.tar.gz -C .release-stage . && node scripts/cleanup-cpanel.mjs",

@@ -16,4 +16,6 @@ This local preview uses a separate SQLite file. The hosted portal uses PostgreSQ
 
 Stop the preview with Control-C. Next time run `npm run dev:local`; the data and your login remain. The setup token only works before the first account exists. For a completely fresh local preview, stop the server and remove `portal/.local-data/`, then start again and create a new account.
 
+Keep `.env.local` for the local preview; the message on the setup page about removing the token applies to a hosted installation. If port 3000 is already used by another app, stop that app first.
+
 External email and reply sync need the organization's Microsoft Graph app registration and shared mailbox credentials. Without those, projects, roles, documents, and internal messages can still be tested locally.
