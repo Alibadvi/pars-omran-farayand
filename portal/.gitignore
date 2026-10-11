@@ -1,0 +1,8 @@
+node_modules/
+.next/
+.env
+.env.local
+private-files/
+next-env.d.ts
+src/payload-types.ts
+*.tsbuildinfo

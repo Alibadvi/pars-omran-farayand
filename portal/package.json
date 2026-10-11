@@ -1,0 +1,40 @@
+{
+  "name": "pars-omran-portal",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build --webpack",
+    "start": "next start",
+    "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap",
+    "bootstrap:admin": "payload run src/scripts/bootstrap-admin.ts"
+  },
+  "dependencies": {
+    "@fontsource/vazirmatn": "5.3.0",
+    "@payloadcms/db-postgres": "3.90.2",
+    "@payloadcms/next": "3.90.2",
+    "@payloadcms/richtext-lexical": "3.90.2",
+    "@payloadcms/ui": "3.90.2",
+    "graphql": "^16.8.1",
+    "next": "16.4.0",
+    "payload": "3.90.2",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "typescript": "6.0.3"
+  },
+  "overrides": {
+    "sass": "1.79.0",
+    "undici": "7.30.0",
+    "dompurify": "3.4.16"
+  },
+  "engines": {
+    "node": ">=24.15.0"
+  }
+}
