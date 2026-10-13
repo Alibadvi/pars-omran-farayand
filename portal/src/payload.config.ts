@@ -16,9 +16,22 @@ import { migrations } from './migrations'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const localSQLite = process.env.NODE_ENV !== 'production' && process.env.PORTAL_LOCAL_SQLITE === '1'
+const postgresPool = process.env.DATABASE_URL
+  ? { connectionString: process.env.DATABASE_URL }
+  : {
+      host: process.env.PGHOST || '127.0.0.1',
+      port: Number(process.env.PGPORT || 5432),
+      database: process.env.PGDATABASE || '',
+      user: process.env.PGUSER || '',
+      password: process.env.PGPASSWORD || '',
+    }
 
 export default buildConfig({
-  admin: { user: Users.slug, importMap: { baseDir: dirname }, components: { graphics: { Logo: './components/AdminLogo#AdminLogo' } } },
+  admin: { user: Users.slug, importMap: { baseDir: dirname }, components: {
+    graphics: { Logo: './components/AdminLogo#AdminLogo', Icon: './components/AdminLogo#AdminIcon' },
+    beforeDashboard: ['./components/AdminWelcome#AdminWelcome'],
+    afterNavLinks: ['./components/AdminWorkspaceLink#AdminWorkspaceLink'],
+  } },
   collections: [Users, Projects, ProjectDocuments, ProjectMessages, ExternalEmails],
   globals: [MailState],
   editor: lexicalEditor(),
@@ -27,7 +40,7 @@ export default buildConfig({
   db: localSQLite ? sqliteAdapter({
     client: { url: `file:${path.resolve(process.cwd(), '.local-data/portal.db')}` },
   }) : postgresAdapter({
-    pool: { connectionString: process.env.DATABASE_URL || '' },
+    pool: postgresPool,
     disableCreateDatabase: true,
     prodMigrations: migrations,
   }),

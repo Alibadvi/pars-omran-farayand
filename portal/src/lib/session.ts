@@ -5,7 +5,7 @@ import { getPayload, type Payload } from 'payload'
 import config from '@/payload.config'
 import { type PortalIdentity, type PortalRole, referenceID } from './access'
 
-type UserRecord = { id: number; email: string; name?: string; role: PortalRole; assignedProjects?: Array<number | string | { id: number | string }> }
+type UserRecord = { id: number; email?: string | null; username?: string | null; name?: string; role: PortalRole; assignedProjects?: Array<number | string | { id: number | string }> }
 
 export async function authenticatedSession(headers: Headers): Promise<{
   payload: Payload

@@ -6,7 +6,7 @@ import { projectRecordAccess } from '../lib/access'
 export const ExternalEmails: CollectionConfig = {
   slug: 'external-emails',
   labels: { singular: 'ایمیل پروژه', plural: 'ایمیل‌های پروژه' },
-  admin: { useAsTitle: 'subject', group: 'ارتباطات', defaultColumns: ['subject', 'project', 'direction', 'status', 'createdAt'] },
+  admin: { useAsTitle: 'subject', group: 'ارتباطات', defaultColumns: ['subject', 'project', 'direction', 'status', 'createdAt'], description: 'این بخش آرشیو ایمیل‌هاست. ارسال از صفحه هر پروژه انجام می‌شود و به اتصال حساب Outlook توسط مدیر دفتر تهران نیاز دارد.' },
   access: {
     read: ({ req }) => projectRecordAccess(req),
     create: () => false,

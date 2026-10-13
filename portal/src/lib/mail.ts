@@ -3,7 +3,11 @@ import type { Payload } from 'payload'
 
 export const MAILBOX = process.env.MS_GRAPH_MAILBOX?.trim().toLowerCase() || ''
 export const GRAPH = 'https://graph.microsoft.com/v1.0'
-export const OAUTH = 'https://login.microsoftonline.com/consumers/oauth2/v2.0'
+// The default supports both work/school and personal Microsoft accounts. A single-tenant
+// registration can set MS_GRAPH_TENANT_ID to its directory ID instead.
+const tenant = process.env.MS_GRAPH_TENANT_ID || 'common'
+if (!/^(common|organizations|consumers|[0-9a-f-]{36})$/i.test(tenant)) throw new Error('Invalid Microsoft tenant ID.')
+export const OAUTH = `https://login.microsoftonline.com/${tenant}/oauth2/v2.0`
 export const SCOPES = 'offline_access User.Read Mail.ReadWrite Mail.Send'
 
 export function mailConfig() {

@@ -8,6 +8,7 @@
   --style-radius-s: 6px;
   --style-radius-m: 9px;
   --style-radius-l: 13px;
+  --theme-success-500: #326c4b;
 }
 
 body, button, input, textarea, select { font-family: var(--font-body); }
@@ -48,9 +49,40 @@ body:has(.login__brand)::before {
 .login__form button[type='submit']:hover { background: #173b2d; }
 .login__form a { color: #225a3f; }
 
+/* The editorial area and project workspace share one visual language. */
+.pof-admin-icon { width: 40px; height: 40px; display: inline-grid; place-items: center; border-radius: 9px; background: #fff; }
+.nav__brand .pof-admin-icon { box-shadow: 0 5px 20px #0d231523; }
+.pof-admin-workspace-link { display: flex; justify-content: space-between; gap: 12px; margin: 16px 12px 10px; padding: 13px 14px; background: #21493b; border-radius: 9px; color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; }
+.pof-admin-workspace-link:hover { background: #153b2c; color: #fff; }
+.pof-admin-welcome { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(270px, .85fr); gap: 30px; margin: 0 0 32px; padding: clamp(24px, 3.4vw, 42px); border-radius: 16px; background: linear-gradient(120deg, #21493b, #143329); color: #fff; }
+.pof-admin-welcome__intro { align-self: center; }
+.pof-admin-welcome__kicker { color: #e6c889; font-size: 12px; font-weight: 700; }
+.pof-admin-welcome h1 { margin: 10px 0; color: #fff; font-size: clamp(24px, 2.6vw, 35px); line-height: 1.5; }
+.pof-admin-welcome p { max-width: 56ch; margin: 0 0 22px; color: #d9e7db; font-size: 13px; line-height: 2; }
+.pof-admin-welcome__primary { display: inline-flex; align-items: center; gap: 16px; padding: 10px 18px; border-radius: 7px; background: #e1b972; color: #183329; font-size: 13px; font-weight: 800; text-decoration: none; }
+.pof-admin-welcome__primary:hover { background: #f1cc89; color: #183329; }
+.pof-admin-welcome__links { display: grid; align-content: center; gap: 8px; }
+.pof-admin-welcome__links a { display: flex; align-items: center; gap: 14px; min-height: 65px; padding: 10px 14px; border: 1px solid #ffffff30; border-radius: 9px; background: #ffffff12; color: #fff; text-decoration: none; }
+.pof-admin-welcome__links a:hover { background: #ffffff22; color: #fff; }
+.pof-admin-welcome__links a > span:first-child { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 7px; background: #ffffff1c; color: #e1b972; font-size: 19px; }
+.pof-admin-welcome__links a > span:nth-child(2) { display: grid; gap: 3px; font-size: 13px; font-weight: 700; }
+.pof-admin-welcome__links small { color: #c5d6c9; font-size: 11px; font-weight: 400; }
+.pof-admin-welcome__links b { margin-inline-start: auto; color: #e1b972; }
+
+@media (max-width: 900px) {
+  .pof-admin-welcome { grid-template-columns: 1fr; }
+  .pof-admin-welcome__links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .pof-admin-welcome__links a { min-width: 0; }
+  .pof-admin-welcome__links a > span:first-child, .pof-admin-welcome__links b { display: none; }
+}
+
 @media (max-width: 760px) {
   body:has(.login__brand)::before { display: none; }
   .login__brand { margin-block: 0 16px; }
   .login__form { padding: 24px 20px; }
   .pof-login-brand strong { font-size: 18px; }
+  .pof-admin-welcome { margin-bottom: 24px; padding: 22px; gap: 22px; }
+  .pof-admin-welcome__links { grid-template-columns: 1fr; }
+  .pof-admin-welcome__links a { min-height: 52px; }
+  .pof-admin-welcome__links a > span:first-child, .pof-admin-welcome__links b { display: grid; }
 }

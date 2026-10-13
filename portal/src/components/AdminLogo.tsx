@@ -6,3 +6,7 @@ export function AdminLogo() {
     <span><strong>پارس عمران فرآیند</strong><small>پرتال مدیریت پروژه‌ها و مکاتبات</small></span>
   </div>
 }
+
+export function AdminIcon() {
+  return <span className="pof-admin-icon"><Image src="/logo.webp" alt="" width={29} height={29} /></span>
+}

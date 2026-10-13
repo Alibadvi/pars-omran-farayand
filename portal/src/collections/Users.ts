@@ -5,8 +5,9 @@ import { portalIdentity } from '../lib/access'
 export const Users: CollectionConfig = {
   slug: 'users',
   labels: { singular: 'همکار', plural: 'همکاران' },
-  auth: true,
-  admin: { useAsTitle: 'email', group: 'مدیریت' },
+  // Keep existing email accounts working while allowing colleagues to use only a username.
+  auth: { loginWithUsername: { allowEmailLogin: true, requireEmail: false, requireUsername: false } },
+  admin: { useAsTitle: 'name', group: 'مدیریت', defaultColumns: ['name', 'username', 'role', 'updatedAt'] },
   access: {
     admin: ({ req }) => Boolean(req.user),
     create: async ({ req }) => (await portalIdentity(req))?.role === 'hq-admin',

@@ -15,7 +15,7 @@ export default async function HomePage() {
   ])
 
   return <div className="shell">
-    <PortalHeader name={user.name || user.email} />
+    <PortalHeader name={user.name || user.username || user.email || 'همکار'} />
     <main className="container">
       <section className="dashboard-hero">
         <div className="hero-copy"><p className="eyebrow">پارس عمران فرآیند / فضای کاری داخلی</p><h1>مرکز پروژه‌ها</h1><p>اسناد، گفتگوهای دفتر تهران و سایت‌های پروژه، و مکاتبات بیرونی را در فضای هر پروژه پیگیری کنید.</p>
