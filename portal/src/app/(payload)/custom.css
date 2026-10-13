@@ -19,3 +19,38 @@ input[type='email'], input[type='url'] { direction: ltr; text-align: left; unico
 }
 
 ::selection { background: #d8e9d5; color: #173a2c; }
+
+body:has(.login__brand) {
+  min-height: 100vh;
+  background: radial-gradient(circle at 12% 10%, #e4ede6 0, transparent 35%),
+    linear-gradient(130deg, #f7f8f4, #eff3ed);
+}
+
+body:has(.login__brand)::before {
+  content: '';
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: min(27vw, 360px);
+  background: linear-gradient(160deg, #224b3a, #112d26);
+  pointer-events: none;
+}
+
+.login__brand, .login__form { position: relative; width: min(480px, calc(100vw - 32px)); margin-inline: auto; }
+.login__brand { margin-block: 0 20px; }
+.pof-login-brand { display: flex; align-items: center; gap: 14px; color: #183a2b; text-align: right; }
+.pof-login-mark { width: 58px; height: 58px; flex: none; display: grid; place-items: center; border-radius: 14px; background: #fff; box-shadow: 0 8px 25px #182d2314; }
+.pof-login-brand strong, .pof-login-brand small { display: block; }
+.pof-login-brand strong { font-size: 21px; line-height: 1.5; }
+.pof-login-brand small { color: #63766d; font-size: 12px; margin-top: 2px; }
+.login__form { padding: 32px; border: 1px solid #dfe7df; border-radius: 14px; background: #fff; box-shadow: 0 22px 60px #18362818; }
+.login__form input { border-radius: 7px; }
+.login__form button[type='submit'] { border-radius: 7px; background: #21493b; color: #fff; }
+.login__form button[type='submit']:hover { background: #173b2d; }
+.login__form a { color: #225a3f; }
+
+@media (max-width: 760px) {
+  body:has(.login__brand)::before { display: none; }
+  .login__brand { margin-block: 0 16px; }
+  .login__form { padding: 24px 20px; }
+  .pof-login-brand strong { font-size: 18px; }
+}

@@ -18,7 +18,7 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 const localSQLite = process.env.NODE_ENV !== 'production' && process.env.PORTAL_LOCAL_SQLITE === '1'
 
 export default buildConfig({
-  admin: { user: Users.slug, importMap: { baseDir: dirname } },
+  admin: { user: Users.slug, importMap: { baseDir: dirname }, components: { graphics: { Logo: './components/AdminLogo#AdminLogo' } } },
   collections: [Users, Projects, ProjectDocuments, ProjectMessages, ExternalEmails],
   globals: [MailState],
   editor: lexicalEditor(),
