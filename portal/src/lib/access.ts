@@ -1,4 +1,4 @@
-import type { PayloadRequest, Where } from 'payload'
+import { APIError, ValidationError, type PayloadRequest, type Where } from 'payload'
 
 export type PortalRole = 'hq-admin' | 'hq-staff' | 'site-manager' | 'site-staff'
 
@@ -24,6 +24,7 @@ export async function portalIdentity(req: PayloadRequest): Promise<PortalIdentit
     id: req.user.id,
     depth: 0,
     overrideAccess: true,
+    disableErrors: true,
     req,
   })
 
@@ -61,13 +62,15 @@ export async function requireProjectAccess(
 ): Promise<number | string> {
   const identity = await portalIdentity(req)
   const id = referenceID(project)
-  if (!identity || id === undefined) throw new Error('A permitted project is required.')
+  if (!identity) throw new APIError('برای انجام این کار ابتدا وارد حساب شوید.', 401)
+  if (id === undefined) throw new ValidationError({ req, errors: [{ path: 'project', message: 'یک پروژه مجاز انتخاب کنید.' }] })
 
   if (!isHeadOffice(identity) && !identity.assignedProjects.some((item) => String(item) === String(id))) {
-    throw new Error('You do not have access to this project.')
+    throw new APIError('به این پروژه دسترسی ندارید.', 403)
   }
 
   // An assignment to a removed project must not authorize writing to a ghost ID.
-  await req.payload.findByID({ collection: 'projects', id, depth: 0, overrideAccess: true, req })
+  const projectRecord = await req.payload.findByID({ collection: 'projects', id, depth: 0, overrideAccess: true, disableErrors: true, req })
+  if (!projectRecord) throw new ValidationError({ req, errors: [{ path: 'project', message: 'پروژه انتخاب‌شده وجود ندارد.' }] })
   return id
 }

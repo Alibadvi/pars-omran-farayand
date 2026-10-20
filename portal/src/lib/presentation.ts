@@ -20,8 +20,8 @@ export const emailStatusLabels: Record<string, string> = {
   failed: 'ارسال ناموفق',
 }
 
-const dateFormatter = new Intl.DateTimeFormat('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' })
-const timeFormatter = new Intl.DateTimeFormat('fa-IR', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+const dateFormatter = new Intl.DateTimeFormat('fa-IR', { timeZone: 'Asia/Tehran', year: 'numeric', month: 'long', day: 'numeric' })
+const timeFormatter = new Intl.DateTimeFormat('fa-IR', { timeZone: 'Asia/Tehran', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
 
 export function formatPortalDate(value: string, withTime = false) {
   const date = new Date(value)

@@ -27,9 +27,9 @@ const postgresPool = process.env.DATABASE_URL
     }
 
 export default buildConfig({
-  admin: { user: Users.slug, importMap: { baseDir: dirname }, components: {
+  admin: { user: Users.slug, avatar: 'default', importMap: { baseDir: dirname }, components: {
     graphics: { Logo: './components/AdminLogo#AdminLogo', Icon: './components/AdminLogo#AdminIcon' },
-    beforeDashboard: ['./components/AdminWelcome#AdminWelcome'],
+    views: { dashboard: { Component: './components/AdminDashboard#AdminDashboard' } },
     afterNavLinks: ['./components/AdminWorkspaceLink#AdminWorkspaceLink'],
   } },
   collections: [Users, Projects, ProjectDocuments, ProjectMessages, ExternalEmails],

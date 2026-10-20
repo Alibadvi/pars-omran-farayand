@@ -1,17 +1,42 @@
 import Link from 'next/link'
 
-export function AdminWelcome() {
-  return <section className="pof-admin-welcome" aria-labelledby="pof-admin-title">
-    <div className="pof-admin-welcome__intro">
-      <span className="pof-admin-welcome__kicker">پارس عمران فرآیند / مدیریت داخلی</span>
-      <h1 id="pof-admin-title">فضای مدیریت پروژه‌ها</h1>
-      <p>پروژه‌ها، همکاران، اسناد و مکاتبات را از اینجا مدیریت کنید. برای گفتگوی روزانه و بارگذاری فایل، وارد فضای کاری شوید.</p>
-      <Link href="/" className="pof-admin-welcome__primary">ورود به فضای کاری <span aria-hidden="true">←</span></Link>
-    </div>
-    <nav className="pof-admin-welcome__links" aria-label="دسترسی سریع مدیریت">
-      <Link href="/admin/collections/projects"><span aria-hidden="true">▦</span><span>پروژه‌ها<small>تعریف و ویرایش پروژه</small></span><b aria-hidden="true">←</b></Link>
-      <Link href="/admin/collections/users"><span aria-hidden="true">◎</span><span>همکاران<small>حساب‌ها و دسترسی‌ها</small></span><b aria-hidden="true">←</b></Link>
-      <Link href="/admin/collections/project-documents"><span aria-hidden="true">▤</span><span>اسناد<small>آرشیو فایل‌های پروژه</small></span><b aria-hidden="true">←</b></Link>
-    </nav>
-  </section>
+import { portalRoleLabels } from '../lib/admin'
+import { AdminGlyph } from './AdminGlyph'
+
+export function AdminWelcome({ name, role }: { name: string; role: string }) {
+  return (
+    <section className="pof-admin-welcome" aria-labelledby="pof-admin-title">
+      <div className="pof-admin-welcome__intro">
+        <span className="pof-admin-welcome__kicker">
+          پارس عمران فرآیند / مرکز مدیریت
+        </span>
+        <h1 id="pof-admin-title">سلام {name}، خوش آمدید.</h1>
+        <p>
+          وضعیت پروژه‌ها را مرور کنید، اسناد را پیدا کنید و کار بعدی را از
+          همین‌جا شروع کنید.
+        </p>
+        <div className="pof-hero-actions">
+          {role === 'hq-admin' && (
+            <Link
+              href="/admin/collections/projects/create"
+              className="pof-admin-welcome__primary"
+            >
+              <AdminGlyph name="plus" /> ایجاد پروژه
+            </Link>
+          )}
+          <Link href="/" className="pof-hero-secondary">
+            ورود به فضای کاری <AdminGlyph name="arrow" />
+          </Link>
+        </div>
+      </div>
+      <div className="pof-hero-aside">
+        <span className="pof-hero-emblem">
+          <AdminGlyph name="projects" />
+        </span>
+        <strong>همه‌چیز، در مسیر پروژه.</strong>
+        <span>{portalRoleLabels[role] || 'همکار پروژه'}</span>
+        <small>اطلاعات این صفحه بر اساس دسترسی حساب شماست.</small>
+      </div>
+    </section>
+  )
 }
